@@ -40,6 +40,7 @@ public class sym {
   public static final int CADENA = 5;
   public static final int MODULO = 39;
   public static final int MENOS = 35;
+  public static final int REQUIRE = 49;
   public static final int BREAK = 47;
   public static final int PAR_IZQ = 12;
   public static final int SWITCH = 45;
@@ -106,7 +107,8 @@ public class sym {
   "SWITCH",
   "CASE",
   "BREAK",
-  "DEFAULT"
+  "DEFAULT",
+  "REQUIRE"
   };
 }
 

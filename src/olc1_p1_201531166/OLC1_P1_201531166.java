@@ -25,7 +25,7 @@ public class OLC1_P1_201531166 {
         //Interfaz iniciar = new Interfaz();
         //iniciar.setVisible(true);
            try {
-            String texto="  do{}while(!(j <= 0));\n switch(numero){ \ncase 'hola': break; case 1: break; default}  \n //Este es un comentario unilinea\n /* Este es un comentario multilínea */ \n llamada1(); \nllamada2(1,2,3,\"hola\",var1);";
+            String texto="   llamada1(); \nllamada2(1,2,3,\"hola\",var1);\n const archivo1 = require(\"../Carpeta1/archivo1 \")\n var archivo2 = require(\"../controller/Carpeta2/archivo2\") ";
             System.out.println("Inicia el analisis...\n");
             scanner scan = new scanner(new BufferedReader( new StringReader(texto)));
             parser parser = new parser(scan);

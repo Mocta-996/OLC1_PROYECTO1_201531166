@@ -70,6 +70,7 @@ SWITCH  ="switch"
 BREAK   ="break"
 CASE    ="case"
 DEFAULT ="default"
+REQUIRE = "require"
 
 INT1     = "int"
 CHAR1    = "char"
@@ -106,6 +107,7 @@ ENTER   = [\ \n]
 <YYINITIAL> {CASE}      { return new Symbol(sym.CASE, yyline, yycolumn,yytext());}
 <YYINITIAL> {BREAK}      { return new Symbol(sym.BREAK, yyline, yycolumn,yytext());}
 <YYINITIAL> {DEFAULT}      { return new Symbol(sym.DEFAULT, yyline, yycolumn,yytext());}
+<YYINITIAL> {REQUIRE}      { return new Symbol(sym.REQUIRE, yyline, yycolumn,yytext());}
 
 
 <YYINITIAL> {INT1}      { return new Symbol(sym.INT1, yyline, yycolumn,"entero");}

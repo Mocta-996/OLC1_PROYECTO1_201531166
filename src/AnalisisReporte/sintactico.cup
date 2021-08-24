@@ -24,7 +24,7 @@ action code
 
 terminal String ID,ENTERO,DECIMAL,CADENA,CADENA_SIMP,INT1,CHAR1,PUB,PRI,VOI;
 terminal PAR_IZQ, PAR_DER, LLAV_IZQ, LLAV_DER, COMA, PTCOMA,IGUAL,DOSPT,PRINT,CLASE,LET,VAR,CONST,IGUALACION, DIFERENCIA, MENOR_Q, MAYOR_Q,
-MENOR_IGUAL, MAYOR_IGUAL,AND, OR, NOT, MAS, MENOS, POR, DIVISION, POTENCIA, MODULO,IF,ELSE,FOR,DO,WHILE,SWITCH, CASE, BREAK,DEFAULT;
+MENOR_IGUAL, MAYOR_IGUAL,AND, OR, NOT, MAS, MENOS, POR, DIVISION, POTENCIA, MODULO,IF,ELSE,FOR,DO,WHILE,SWITCH, CASE, BREAK,DEFAULT,REQUIRE;
 
 //nonterminal String  VIS,TIPO;
 nonterminal  INICIO, SENTENCIAS, S, CUERPO, C, LIST, L, 
@@ -57,7 +57,8 @@ nonterminal  INICIO, SENTENCIAS, S, CUERPO, C, LIST, L,
     SEN_CASE,                // no terminal para la sentencia case
     SEN_BREAK,               // no terminal para la sentencia break
     EXP_CASE,                // expresion auxiliar sentencia switch case
-    LLAM_MET               // no terminal para llamar metodos 
+    LLAM_MET,               // no terminal para llamar metodos 
+    IMPORTS                 //no terminal para las expresiones de importar
 
     ;
 
@@ -87,6 +88,7 @@ SENTENCIAS ::= SENTENCIAS CLAS
     |SENTENCIAS SEN_WHILE
     |SENTENCIAS SEN_SWITCH
     |SENTENCIAS LLAM_MET
+    |SENTENCIAS IMPORTS
     |VARIABLE
     |MET_PARM
     |MET
@@ -97,6 +99,7 @@ SENTENCIAS ::= SENTENCIAS CLAS
     |SEN_WHILE
     |SEN_SWITCH
     |LLAM_MET
+    |IMPORTS
 
 ;
 
@@ -494,7 +497,13 @@ LLAM_MET ::= ID:a PAR_IZQ  PAR_DER PTCOMA
                 System.out.println("nombre del parametro : "+ a +" Con Parametros:"+ tmp );     
             :}
             ;
+// ================ Transiciones LLAMADA DE IMPORTS ================
 
+IMPORTS ::= TIPO_VAR:a ID:b IGUAL REQUIRE PAR_IZQ CADENA:c PAR_DER
+            {:
+                System.out.println("Importar : "+ a +" "+ b +"path:"+c );     
+            :}
+            ;
 
 
 
