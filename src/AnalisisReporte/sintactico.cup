@@ -1,0 +1,528 @@
+package AnalisisReporte;
+
+import java_cup.runtime.Symbol;
+
+//PARSER 
+parser code
+{://Codigo visible
+    
+    public void syntax_error(Symbol s){
+        System.out.println("Error R de sintaxis: "+ s.value +" Linea "+(s.left+1)+" columna "+(s.right+1) );
+    }
+
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{ 
+        System.out.println("Error NR de sintaxis: "+ s.value +" Linea "+(s.left+1)+" columna "+(s.right+1) );
+    }
+
+:}
+
+action code
+{://Codigo de usuario
+    String tmp="";
+:}
+
+
+terminal String ID,ENTERO,DECIMAL,CADENA,CADENA_SIMP,INT1,CHAR1,PUB,PRI,VOI;
+terminal PAR_IZQ, PAR_DER, LLAV_IZQ, LLAV_DER, COMA, PTCOMA,IGUAL,DOSPT,PRINT,CLASE,LET,VAR,CONST,IGUALACION, DIFERENCIA, MENOR_Q, MAYOR_Q,
+MENOR_IGUAL, MAYOR_IGUAL,AND, OR, NOT, MAS, MENOS, POR, DIVISION, POTENCIA, MODULO,IF,ELSE,FOR,DO,WHILE,SWITCH, CASE, BREAK,DEFAULT;
+
+//nonterminal String  VIS,TIPO;
+nonterminal  INICIO, SENTENCIAS, S, CUERPO, C, LIST, L, 
+    CLAS,                   // no terminal reconocer clase
+    MET_PARM,               // no terminal reconocer metodos con parametros
+    PAR,                    // Para identificar un parametro
+    P_AUX,                  // Auxiliar para identificar un parametro
+    MET,                    // no terminal reconocer metodos sin parametros
+    VARIABLE,               // no terminal para identificar declaracion de variables
+    TIPO_VAR,               // identifica el tipo de variable
+    VALOR,                  // no terminal para la asignacion de la variable
+    SEN_IF,                 //  no termianl para la sentencia if
+    CONDICION,              //  no terminal para verificar el estado de variables dentro de la sentencia if
+    CONDICION1,             //  no terminal auxilir para verificar el estado de variables dentro de la sentencia if
+    VAR1,                   // Variable auxiliar para las condiciones
+    VAR2,                    // Variable 2 auxiliar para las condiciones
+    OP,                      // operacion a realizarse en las sentencias if
+    SEN_FOR,                 // no terminal para sentencia for
+    COND_FOR,                // no terminal para la condicion de la sentencia for
+    VAR_FOR,                 // declaracion de una variable para las condiciones for
+    VAR_FOR2,                // declaracion de una variable auxiliar
+    AUMENTO,                 // declaracion de i++; en ciclo for
+    OP_FOR,                  // declaracion de una operacion auxiliar para la variable for
+    ARITMETICO,              // devuelve un signo de una operacion aritmetica
+    VARIABLE_FOR,
+    SEN_DO,                  // no terminal para la sentencia do
+    SEN_WHILE,               // no terminal para la sentencia while
+    COND_WHILE,              // no terminal para las condiciones while
+    SEN_SWITCH,              // no terminal para las sentencias switch
+    SEN_CASE,                // no terminal para la sentencia case
+    SEN_BREAK,               // no terminal para la sentencia break
+    EXP_CASE,                // expresion auxiliar sentencia switch case
+    LLAM_MET               // no terminal para llamar metodos 
+
+    ;
+
+
+//agregamos la precedencia
+
+//precedence left MAS, MENOS;
+//precedence left POR, DIV; 
+
+// se inicia al analisis sintactico con inicio
+start with INICIO;
+
+INICIO ::= SENTENCIAS
+                {:
+                    //System.out.println(tmp);
+                    tmp="";
+                :}
+;
+
+SENTENCIAS ::= SENTENCIAS CLAS
+    |SENTENCIAS MET_PARM
+    |SENTENCIAS MET
+    |SENTENCIAS VARIABLE
+    |SENTENCIAS SEN_IF
+    |SENTENCIAS SEN_FOR
+    |SENTENCIAS SEN_DO
+    |SENTENCIAS SEN_WHILE
+    |SENTENCIAS SEN_SWITCH
+    |SENTENCIAS LLAM_MET
+    |VARIABLE
+    |MET_PARM
+    |MET
+    |CLAS
+    |SEN_IF
+    |SEN_FOR
+    |SEN_DO
+    |SEN_WHILE
+    |SEN_SWITCH
+    |LLAM_MET
+
+;
+
+// =================== Declaracion de las transiciones de la clase ====================
+CLAS ::= CLASE ID:id
+    {:
+        System.out.println("Se encontro una clase: "+id);
+    :}
+    PAR_IZQ PAR_DER LLAV_IZQ LLAV_DER   
+; // Falta agregar el cuerpo de la clase
+
+// ================ Declaracion de las transiciones metodos con parametros ================
+
+MET_PARM ::= ID:id PAR_IZQ PAR PAR_DER LLAV_IZQ
+    {:
+        System.out.println("El metodo: "+id);
+        System.out.println("Con parametros: "+tmp);
+    :}
+    LLAV_DER
+    ; // Falta agregar el cuerpo del metodo
+
+PAR ::= PAR COMA
+        {:
+                    tmp+=",";
+        :} 
+        P_AUX
+        |P_AUX
+        ;
+
+P_AUX ::= ID:id
+        {:
+            tmp+=id;
+        :} 
+        |CADENA:a
+            {:
+            tmp+=a;
+            :} 
+        |ENTERO:a
+            {:
+            tmp+=a;
+            :} 
+        |DECIMAL:a
+            {:
+            tmp+=a;
+            :} 
+    ;
+
+// ================ Declaracion de las transiciones metodos sin parametros ================
+MET ::= ID:id PAR_IZQ PAR_DER LLAV_IZQ
+    {:
+        System.out.println("El metodo: "+id);
+        System.out.println("No tiene parametros");
+    :}
+    LLAV_DER
+    // falta cuerpo del metodo
+    ;  
+// ================ Declaracion de las transiciones  identificar variables ================
+
+VARIABLE ::= TIPO_VAR:tipo ID:id IGUAL VALOR:value
+        {:System.out.println("Varibale: "+id+" tipo: "+tipo +" con valor: "+value);:}
+        ; 
+
+TIPO_VAR ::= VAR:va
+            {:
+                    RESULT=va;
+            :}
+        |LET:le
+            {:
+                    RESULT=le;
+            :}
+        |CONST:cs
+            {:
+                    RESULT=cs;
+            :}
+        ;
+VALOR ::= ENTERO:e PTCOMA
+            {:
+                    RESULT=e;
+            :}
+        |DECIMAL:e PTCOMA
+            {:
+                    RESULT=e;
+            :}
+        |CADENA:ca PTCOMA
+            {:
+                    RESULT=ca;
+            :}
+        |CADENA_SIMP:ca PTCOMA
+            {:
+                    RESULT=ca;
+            :}
+        |ID:ca PTCOMA                       // para booleanos
+            {:
+                    RESULT=ca;
+            :}
+        |ENTERO:e
+            {:
+                    RESULT=e;
+            :}
+        |DECIMAL:e
+            {:
+                    RESULT=e;
+            :}
+        |CADENA:ca
+            {:
+                    RESULT=ca;
+            :}
+        |CADENA_SIMP:ca
+            {:
+                    RESULT=ca;
+            :}
+        |ID:ca                          // para booleanos
+            {:
+                    RESULT=ca;
+            :}
+        ;
+
+// ================ Transiciones sentencia If ================
+
+SEN_IF ::= IF PAR_IZQ CONDICION:a PAR_DER 
+        {:
+           System.out.println("sentencia if condicion: "+a );
+        :}
+        LLAV_IZQ 
+                // cuerpo de la sentencia if
+        LLAV_DER
+        | ELSE LLAV_IZQ 
+                // cuerpo de la sentencia if
+               {:System.out.println("if con else" );:}
+        LLAV_DER
+        | ELSE  IF PAR_IZQ CONDICION:a PAR_DER 
+        {:
+           System.out.println("sentencia if condicion: "+a );
+        :}
+        LLAV_IZQ 
+                // cuerpo de la sentencia if
+        LLAV_DER
+        ;
+
+CONDICION ::= CONDICION:a OP:b CONDICION1:c
+            {:
+                RESULT= a+" " +b+" "+c  ;
+            :}
+            |CONDICION1:a
+                {:
+                    RESULT= a ;
+                :}
+            ;
+
+CONDICION1 ::= 
+          VAR1:var1 OP:ope VAR2:var2
+            {:
+                RESULT= var1+" "+ope+" "+var2 ;
+            :}
+        ;
+
+VAR1 ::= ENTERO:ret 
+            {:
+                RESULT=ret;
+            :}
+        | CADENA:ret 
+            {:
+                RESULT=ret;
+            :}
+        
+        | CADENA_SIMP:ret 
+            {:
+                RESULT=ret;
+            :}
+        | ID:ret 
+            {:
+                RESULT=ret;
+            :}
+        ;
+
+VAR2 ::= ENTERO:ret 
+            {:
+                RESULT=ret;
+            :}
+        | CADENA:ret 
+            {:
+                RESULT=ret;
+            :}
+        
+        | CADENA_SIMP:ret 
+            {:
+                RESULT=ret;
+            :}
+        | ID:ret 
+            {:
+                RESULT=ret;
+            :}
+        ;
+
+OP  ::= IGUALACION:op 
+            {:
+                RESULT=op;
+            :}
+        | DIFERENCIA:op 
+            {:
+                RESULT=op;
+            :}
+        | MAYOR_Q:op 
+            {:
+                RESULT=op;
+            :}
+        | MENOR_Q:op 
+            {:
+                RESULT=op;
+            :}
+        | MENOR_IGUAL:op 
+            {:
+                RESULT=op;
+            :}
+        | MAYOR_IGUAL:op 
+            {:
+                RESULT=op;
+            :}
+        | AND:op 
+            {:
+                RESULT=op;
+            :}
+        | OR:op 
+            {:
+                RESULT=op;
+            :}
+        | NOT:op 
+        ;
+
+// ================ Transiciones sentencia For ================
+
+SEN_FOR ::= FOR PAR_IZQ
+            COND_FOR:c
+                {:
+                System.out.println("Ciclo for con condiciones: "+c );
+                :}
+            PAR_DER LLAV_IZQ
+             // cuerpo del ciclo for
+            LLAV_DER
+            ;
+
+COND_FOR ::= VAR_FOR:a PTCOMA CONDICION1:b PTCOMA AUMENTO:c
+            {:
+                RESULT = a +"; "+b+";"+c;
+                 
+            :}  
+            ;
+VAR_FOR ::= VARIABLE_FOR:a
+            {:
+                RESULT = a ;
+            :}  
+            |VAR_FOR2:a
+            {:
+                RESULT = a ;
+            :} 
+        ; 
+VAR_FOR2 ::= VAR1:a IGUAL OP_FOR:c
+            {:
+                RESULT = a +"="+c ;
+            :} 
+        ;
+OP_FOR ::=  OP_FOR:a ARITMETICO:b ENTERO:c
+            {:
+                RESULT = a +""+b+""+c ;
+            :} 
+            |OP_FOR:a ARITMETICO:b ID:c
+            {:
+                RESULT = a +""+b+""+c ;
+            :} 
+            |OP_FOR:a ENTERO:b 
+            {:
+                RESULT = a +""+b ;
+            :} 
+            |OP_FOR:a ID:b 
+            {:
+                RESULT = a +""+b ;
+            :} 
+            |ENTERO:a
+            {:
+                RESULT = a;
+            :} 
+            |ID:a
+            {:
+                RESULT = a;
+            :} 
+            |ARITMETICO:a
+            {:
+                RESULT = a;
+            :} 
+            ;
+
+
+VARIABLE_FOR ::= TIPO_VAR:tipo ID:id IGUAL OP_FOR:value
+        {:RESULT =  tipo +""+id+"="+value;:}
+        ; 
+
+
+
+AUMENTO ::= AUMENTO:a ARITMETICO:b
+            {:
+                    RESULT=a+""+b;
+            :}
+            |AUMENTO:a ARITMETICO:b ENTERO:c
+            {:
+                    RESULT=a+""+b+""+c;
+            :}
+            |ID:a
+            {:
+                    RESULT=a;
+            :}
+            |ENTERO:a
+            {:
+                    RESULT=a;
+            :}
+            |ARITMETICO:a
+            {:
+                    RESULT=a;
+            :}
+            ;
+
+
+// ================ Transiciones sentencia DO ================
+SEN_DO ::= DO LLAV_IZQ 
+           LLAV_DER
+          WHILE PAR_IZQ COND_WHILE:c 
+        {: System.out.println("sentencia do while : "+c ); :}
+        PAR_DER PTCOMA
+        ;
+// ================ Transiciones sentencia while ================
+SEN_WHILE ::= WHILE PAR_IZQ COND_WHILE:a 
+            {: 
+              System.out.println("sentencia while : "+a ); 
+              RESULT = a;
+            :}
+            PAR_DER 
+            LLAV_IZQ
+           
+            LLAV_DER
+            ;
+COND_WHILE ::= CONDICION:a
+            {:
+                    RESULT=a;
+            :}
+            | NOT PAR_IZQ CONDICION:a PAR_DER
+            {:
+                    RESULT= "!(" +a+")";
+            :}
+            ;
+
+// ================ Transiciones sentencia SWITCH CASE ================
+SEN_SWITCH ::=SWITCH PAR_IZQ ID:id PAR_DER LLAV_IZQ
+            {:
+                System.out.println("switch case parametro : "+id );     
+            :}
+            SEN_CASE:a
+                {:
+                System.out.println("casos : "+a );     
+                :}
+            DEFAULT
+                //agregar la accion para el default
+            LLAV_DER
+            ;
+
+
+
+SEN_CASE ::= SEN_CASE CASE EXP_CASE:exp DOSPT 
+            {:RESULT = exp;:}
+             {:
+                System.out.println("casos : "+exp );     
+             :}
+            //agregar la accion a realizar
+            BREAK PTCOMA
+            | CASE EXP_CASE:exp DOSPT 
+            {:RESULT = exp;:}
+             {:
+                System.out.println("casos : "+exp );     
+             :}
+            //agregar la accion a realizar
+            BREAK PTCOMA
+            ;
+EXP_CASE ::= CADENA:a
+            {:RESULT = a;:}
+            |CADENA_SIMP:a
+            {:RESULT = a;:}
+            |ENTERO:a
+             {:RESULT = a;:}
+            ;
+// ================ Transiciones LLAMADA DE METODOS ================
+LLAM_MET ::= ID:a PAR_IZQ  PAR_DER PTCOMA
+            {:
+                System.out.println("nombre del parametro : "+ a +" Con Parametros:"+ tmp );     
+             :}
+            |ID:a PAR_IZQ PAR PAR_DER PTCOMA
+            {:
+                System.out.println("nombre del parametro : "+ a +" Con Parametros:"+ tmp );     
+            :}
+            ;
+
+
+
+
+//=============================== Transiciones para operaciones aritmeticas ==============================
+ARITMETICO ::= 
+            MAS:a
+            {:
+                RESULT = a ;
+            :} 
+            |MENOS:a
+            {:
+                RESULT = a ;
+            :} 
+            |POR:a
+            {:
+                RESULT = a ;
+            :} 
+            |DIVISION:a
+            {:
+                RESULT = a ;
+            :} 
+            |POTENCIA:a
+            {:
+                RESULT = a ;
+            :} 
+            |MODULO:a
+            {:
+                RESULT = a ;
+            :} 
+            ;
+            
