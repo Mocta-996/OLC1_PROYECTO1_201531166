@@ -2,7 +2,7 @@ package Analisis;
 
 import java_cup.runtime.Symbol;
 
-
+// LEXICO PARA ANALIZAR LA ENTRADA DE LOS REPORTES
 
 %%
 
@@ -23,13 +23,14 @@ import java_cup.runtime.Symbol;
 
 //simbolos
 
-PAR_A   = "("
-PAR_C   = ")"
-LLAV_A  = "{"
-LLAV_C  = "}" 
+PAR_IZQ   = "("
+PAR_DER   = ")"
+LLAV_IZQ  = "{"
+LLAV_DER  = "}" 
 COMA    = ","
-PYCOMA  = ";"
-ASIGNA  = "="
+PTCOMA  = ";"
+DOSPT  = ":"
+IGUAL  = "="
 
 //palabras reservadas
 
@@ -44,6 +45,10 @@ PRINT    = "print"
 
 ENTERO  = [0-9]+   
 ID      = [A-Za-zñÑ][_0-9A-Za-zñÑ]*
+CADENA  = (\"([^\"\n]|(\\\"))*\")+
+CADENA_SIMP  = (\'([^\"\n]|(\\\"))*\')+
+COMENTARIO_LINEA =("##".*\r\n)|("//".*\n)|("//".*\r)
+COMENTARIO_MULINEA ="#*""/"*([^*/]|[^*]"/"|"*"[^/])*"*"*"*#"
 
 SPACE   = [\ \r\t\f\t]
 ENTER   = [\ \n]
@@ -58,17 +63,24 @@ ENTER   = [\ \n]
 <YYINITIAL> {PRINT}     { return new Symbol(sym.PRINT, yyline, yycolumn,yytext());}
 
 
-<YYINITIAL> {PAR_A}     {return new Symbol(sym.PAR_A, yyline, yycolumn,yytext());}
-<YYINITIAL> {PAR_C}     {return new Symbol(sym.PAR_C, yyline, yycolumn,yytext());}
-<YYINITIAL> {LLAV_A}    {return new Symbol(sym.LLAV_A, yyline, yycolumn,yytext());}
-<YYINITIAL> {LLAV_C}    {return new Symbol(sym.LLAV_C, yyline, yycolumn,yytext());}
+<YYINITIAL> {PAR_IZQ}     {return new Symbol(sym.PAR_IZQ, yyline, yycolumn,yytext());}
+<YYINITIAL> {PAR_DER}     {return new Symbol(sym.PAR_DER, yyline, yycolumn,yytext());}
+<YYINITIAL> {LLAV_IZQ}    {return new Symbol(sym.LLAV_IZQ, yyline, yycolumn,yytext());}
+<YYINITIAL> {LLAV_DER}    {return new Symbol(sym.LLAV_DER, yyline, yycolumn,yytext());}
 <YYINITIAL> {COMA}      {return new Symbol(sym.COMA, yyline, yycolumn,yytext());}
-<YYINITIAL> {PYCOMA}    {return new Symbol(sym.PYCOMA, yyline, yycolumn,yytext());}
-<YYINITIAL> {ASIGNA}    {return new Symbol(sym.ASIGNA, yyline, yycolumn,yytext());}
+<YYINITIAL> {PTCOMA}    {return new Symbol(sym.PTCOMA, yyline, yycolumn,yytext());}
+<YYINITIAL> {IGUAL}    {return new Symbol(sym.IGUAL, yyline, yycolumn,yytext());}
+<YYINITIAL> {DOSPT}    {return new Symbol(sym.DOSPT, yyline, yycolumn,yytext());}
 
 
 <YYINITIAL> {ENTERO}    { return new Symbol(sym.ENTERO, yyline, yycolumn,yytext());}
 <YYINITIAL> {ID}        {return new Symbol(sym.ID, yyline, yycolumn,yytext());}
+<YYINITIAL> {CADENA}    {return new Symbol(sym.CADENA, yyline, yycolumn,yytext());}
+<YYINITIAL> {CADENA_SIMP}    {return new Symbol(sym.CADENA_SIMP, yyline, yycolumn,yytext());}
+<YYINITIAL> {COMENTARIO_LINEA}    {System.out.println("Este es un comentario:"+yytext());} 
+<YYINITIAL> {COMENTARIO_MULINEA}    {System.out.println("Este es un comentario:"+yytext());} 
+
+
 <YYINITIAL> [\"]        { yybegin(CADENA); cadena+="\""; }
 <YYINITIAL> {SPACE}     { /*Espacios en blanco, ignorados*/ }
 <YYINITIAL> {ENTER}     { /*Saltos de linea, ignorados*/}
