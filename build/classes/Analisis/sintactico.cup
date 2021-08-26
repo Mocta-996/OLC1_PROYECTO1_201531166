@@ -22,11 +22,32 @@ action code
 :}
 
 
-terminal String ID,ENTERO,CADENA,INT1,CHAR1,PUB,PRI,VOI;
-terminal PAR_A, PAR_C, LLAV_A, LLAV_C, COMA, PYCOMA,ASIGNA,PRINT;
+terminal String ID,ENTERO,DECIMAL, CADENA,CADENA_SIMP,INT1,CHAR1,PUB,PRI,VOI,GENERAR_REPORTE,DEFINIR_GLOBALES,COMPARE,STRING,DOUBLE,
+                TITULO,GRAFICA_BARRAS,EJEX, VALOR_EJEX,VALORES,TITULOX,TITULOY,GRAFICA_PIE,ARCHIVO,GRAFICA_LINE;
+terminal PAR_IZQ, PAR_DER, LLAV_IZQ, LLAV_DER, COMA, PTCOMA,DOSPT,IGUAL,DOLLAR;
 
 nonterminal String VIS,TIPO;
-nonterminal  INICIO, SENTENCIAS, S, CUERPO, C, LIST, L;
+nonterminal  INICIO, INSTRUCCION, S, CUERPO, C, LIST, L,
+            CARGAR,                  // permite cargar archivos para  la instruccion compare
+            PATH,                     // Obtiene la direccion de los archivos
+            DEFIN_VAR,               // Definir variables globales
+            VARIABLES,               //  donde se definen las variables globales
+            VALOR,                  // valor de las variables 
+            TIPO_V,                    // tipo de variable que se ingresa
+            GRAF_BARRAS,             //no terminal para la grafica de barras
+            INS_GBARRAS,             //no terminal que contiene las instrucciones de la grafica de barras
+            TIT_GBARRAS,             //no termianl para el titulo de la grafica de barras
+            VAL_EJEX,                 // recibe los valores de la lista del eje x
+            VAL_VALORES,                 //lista de valores que recibe la grafica
+            TIT_X,                      //titulo del eje x
+            TIT_Y,                       // titulo eje y
+            CAD_DOLLAR,                  //reconoce cadenas con dollar
+            CONT,
+            GRAF_PIE,                //no terminal para la grafica de pie
+            INS_GPIE,                //instrucciones para grafica de pie
+            GRAF_LINEAS,                // no terminal para la grafica archivo
+            INS_LINEAS                // instrucciones para la grafica de linea
+            ;
 
 
 //agregamos la precedencia
@@ -37,89 +58,167 @@ nonterminal  INICIO, SENTENCIAS, S, CUERPO, C, LIST, L;
 
 start with INICIO;
 
-INICIO ::= SENTENCIAS
-                {:
-                    System.out.println(tmp);
-                    tmp="";
-                :}
-;
-
-SENTENCIAS ::= SENTENCIAS S
-    |S
-;
-
-S ::= VIS:vi TIPO:tip ID:id PAR_A 
-                {:
-                    if(!tip.equalsIgnoreCase("void")){
-                        tmp+="funcion "+vi+" "+tip+" "+id+"(";
-                    }else{
-                        tmp+="metodo "+vi+" "+id+"(";
-                    }
-                :}
-    LIST PAR_C LLAV_A
-                {:
-                    tmp+=")"+"{\n";
-                :}
-    CUERPO LLAV_C
-                {:
-                    tmp+="}\n";
-                :}
-
-    | error PYCOMA
-    | error LLAV_C
-;
-
-LIST ::= LIST COMA
-                {:
-                    tmp+=",";
-                :} 
-    L
-
-    | L
-;
-
-L ::= TIPO:tip ID:id
-                {:
-                    tmp+=tip+" "+id;
-                :}
-;
-
-CUERPO ::= CUERPO C
-    | C
-;
-
-C ::= TIPO:tip ID:id ASIGNA ENTERO:num PYCOMA 
-                {:
-                    tmp+=tip+" "+id+"="+num+";\n";
-                :}
-    |PRINT PAR_A CADENA:cad PAR_C PYCOMA
-                {:
-                    tmp+="imprimir("+cad+");\n";
-                :}
-;
-
-TIPO ::= INT1:in 
-                {:
-                    RESULT=in;
-                :}
-    | CHAR1:ch
-                {:
-                    RESULT=ch;
-                :}
-    | VOI:vo
-                {:
-                    RESULT=vo;
-                :}
-;
-
-VIS ::= PUB:pu
-                {:
-                    RESULT=pu;
-                :}
-    | PRI:pr 
-                {:
-                    RESULT=pr;
-                :}
-;
+INICIO ::= GENERAR_REPORTE LLAV_IZQ INSTRUCCION
+             
+             LLAV_DER
+        ;
 
 
+INSTRUCCION::=  INSTRUCCION CARGAR
+                |INSTRUCCION DEFIN_VAR
+                |INSTRUCCION GRAF_BARRAS
+                |INSTRUCCION GRAF_PIE
+                |INSTRUCCION GRAF_LINEAS
+                |CARGAR
+                |DEFIN_VAR
+                |GRAF_BARRAS
+                |GRAF_PIE
+                |GRAF_LINEAS
+                ;
+
+//============================== CARGAR ARCHIVOS DE ENTRADA ================================
+CARGAR ::=  COMPARE PAR_IZQ PATH:a COMA PATH:b  PAR_DER PTCOMA
+             {:System.out.println("Se cargaran los siguientes archivos: " +a +","+b);:}
+            ;
+
+PATH ::= CADENA:a
+          {:RESULT=a;:}
+        | CADENA_SIMP:b 
+            {:RESULT=b;:}
+        ;
+
+//============================= DEFINIR VARIABLES GLOBALES ==============================
+DEFIN_VAR ::= DEFINIR_GLOBALES LLAV_IZQ VARIABLES:a LLAV_DER
+             {:System.out.println("variable: " +a +"\n" );:}
+            ;
+VARIABLES ::= VARIABLES:d  TIPO_V:c ID:a IGUAL VALOR:b  PTCOMA
+            {:RESULT= d+" "+c +" "+a +" " +b;:}
+            |TIPO_V:c ID:a IGUAL VALOR:b  PTCOMA
+            {:RESULT= c +" "+a +" " +b;:}
+            ;
+
+TIPO_V ::= STRING:a
+        {:RESULT = a;:}
+        |DOUBLE:b
+        {:RESULT= b;:}
+        ;
+
+VALOR ::= ENTERO:a
+        {:RESULT= a;:}
+        |DECIMAL:a
+        {:RESULT= a;:}
+        |CADENA:a
+        {:RESULT= a;:}
+        |CADENA_SIMP:a
+        {:RESULT= a;:}
+        |CAD_DOLLAR:a
+        {:RESULT= a;:}
+        ;
+CAD_DOLLAR ::= DOLLAR LLAV_IZQ CONT:b LLAV_DER
+            {:RESULT= b;:}
+        ;
+
+CONT ::= CONT:b COMA ID:a 
+         {:RESULT=b+","+a;:}
+         |CONT:b COMA CADENA:a 
+         {:RESULT=b+ ","+a;:}
+         |COMA CADENA:a 
+         {:RESULT= a;:}
+         |COMA ID:a 
+         {:RESULT= a;:}
+         | CADENA:a 
+         {:RESULT= a;:}
+         |ID:a 
+         {:RESULT= a;:}
+         ;
+        
+//============================= DEFINIR PARAMETRO DE GRAFICA DE BARRAS ==============================
+GRAF_BARRAS ::= GRAFICA_BARRAS LLAV_IZQ
+            INS_GBARRAS
+            LLAV_DER 
+            ;
+
+INS_GBARRAS ::= INS_GBARRAS TIT_GBARRAS
+            |INS_GBARRAS VAL_EJEX:a
+             {:System.out.println("Valores eje x:"+ a);:}
+            |INS_GBARRAS VAL_VALORES:a
+             {:System.out.println("Valores Ingresados:"+ a);:}
+            |INS_GBARRAS TIT_X:a
+             {:System.out.println("Titulo del eje x:"+ a);:}
+            |INS_GBARRAS TIT_Y:a
+             {:System.out.println("Titulo del eje y:"+ a);:}
+
+            |TIT_GBARRAS:a
+            {:System.out.println("TITULO:"+ a);:}
+            |VAL_EJEX:a
+            {:System.out.println("Valores eje x:"+ a);:}
+            |VAL_VALORES:a
+            {:System.out.println("Valores ingresados:"+ a);:}
+            ;
+
+TIT_GBARRAS ::= TITULO DOSPT ID:a PTCOMA
+            {:RESULT= a;:}
+            |TITULO DOSPT CADENA:a PTCOMA
+            {:RESULT= a;:}
+            ;
+
+VAL_EJEX ::= EJEX DOSPT VALOR_EJEX:a PTCOMA
+            {:RESULT= a;:}
+            ;
+
+VAL_VALORES ::= VALORES DOSPT VALOR_EJEX:a PTCOMA
+            {:RESULT= a;:}
+            ;
+
+TIT_X ::=   TITULOX DOSPT ID:a PTCOMA
+            {:RESULT= a;:}
+            |TITULOX DOSPT CADENA:a PTCOMA
+            {:RESULT= a;:}
+            ;
+
+TIT_Y ::=   TITULOY DOSPT ID:a PTCOMA
+            {:RESULT= a;:}
+            |TITULOY DOSPT CADENA:a PTCOMA
+            {:RESULT= a;:}
+            ;
+
+//============================= DEFINIR PARAMETRO DE GRAFICA PIE ==============================
+
+GRAF_PIE ::= GRAFICA_PIE LLAV_IZQ 
+            INS_GPIE
+            LLAV_DER
+            ;
+
+INS_GPIE ::= VAL_VALORES:a
+            {:System.out.println("Valores ingresados:"+ a);:} 
+            |TIT_GBARRAS:a
+            {:System.out.println("TITULO:"+ a);:}
+            |VAL_EJEX:a
+            {:System.out.println("Valores eje x:"+ a);:}
+            |INS_GPIE TIT_GBARRAS         
+            |INS_GPIE VAL_EJEX:a
+             {:System.out.println("Valores eje x:"+ a);:}
+            |INS_GPIE VAL_VALORES:a
+             {:System.out.println("Valores Ingresados:"+ a);:}
+            
+            ;
+
+//============================= DEFINIR PARAMETRO DE  GRAFICA DE LINEA ==============================
+
+GRAF_LINEAS ::= GRAFICA_LINE LLAV_IZQ 
+            INS_LINEAS
+            LLAV_DER
+            ;
+
+INS_LINEAS ::= INS_LINEAS TIT_GBARRAS    
+            |TIT_GBARRAS:a
+            {:System.out.println("TITULO:"+ a);:}
+            | INS_LINEAS ARCHIVO DOSPT ID:a PTCOMA
+            {:System.out.println("Archivo:"+ a);:}
+            | INS_LINEAS ARCHIVO DOSPT CADENA:a PTCOMA
+            {:System.out.println("Archivo:"+ a);:}
+            |ARCHIVO DOSPT ID:a PTCOMA
+            {:System.out.println("Archivo:"+ a);:}
+            |ARCHIVO DOSPT CADENA:a PTCOMA
+            {:System.out.println("Archivo:"+ a);:}
+            ;

@@ -8,43 +8,79 @@ package Analisis;
 /** CUP generated class containing symbol constants. */
 public class sym {
   /* terminals */
-  public static final int PYCOMA = 15;
-  public static final int CADENA = 4;
-  public static final int LLAV_C = 13;
-  public static final int LLAV_A = 12;
-  public static final int PAR_C = 11;
-  public static final int PAR_A = 10;
-  public static final int ID = 2;
-  public static final int COMA = 14;
-  public static final int INT1 = 5;
-  public static final int EOF = 0;
-  public static final int PRI = 8;
-  public static final int PRINT = 17;
-  public static final int error = 1;
-  public static final int PUB = 7;
-  public static final int ASIGNA = 16;
+  public static final int INT1 = 7;
+  public static final int PAR_DER = 28;
+  public static final int DEFINIR_GLOBALES = 13;
   public static final int ENTERO = 3;
-  public static final int CHAR1 = 6;
-  public static final int VOI = 9;
+  public static final int DOUBLE = 16;
+  public static final int PRI = 10;
+  public static final int DOSPT = 33;
+  public static final int GRAFICA_BARRAS = 18;
+  public static final int TITULOY = 23;
+  public static final int TITULOX = 22;
+  public static final int PUB = 9;
+  public static final int EJEX = 19;
+  public static final int VALOR_EJEX = 20;
+  public static final int IGUAL = 34;
+  public static final int ARCHIVO = 25;
+  public static final int GRAFICA_PIE = 24;
+  public static final int GRAFICA_LINE = 26;
+  public static final int TITULO = 17;
+  public static final int CHAR1 = 8;
+  public static final int LLAV_IZQ = 29;
+  public static final int ID = 2;
+  public static final int VOI = 11;
+  public static final int EOF = 0;
+  public static final int DECIMAL = 4;
+  public static final int CADENA_SIMP = 6;
+  public static final int VALORES = 21;
+  public static final int error = 1;
+  public static final int COMA = 31;
+  public static final int CADENA = 5;
+  public static final int PAR_IZQ = 27;
+  public static final int COMPARE = 14;
+  public static final int DOLLAR = 35;
+  public static final int PTCOMA = 32;
+  public static final int STRING = 15;
+  public static final int LLAV_DER = 30;
+  public static final int GENERAR_REPORTE = 12;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
   "ID",
   "ENTERO",
+  "DECIMAL",
   "CADENA",
+  "CADENA_SIMP",
   "INT1",
   "CHAR1",
   "PUB",
   "PRI",
   "VOI",
-  "PAR_A",
-  "PAR_C",
-  "LLAV_A",
-  "LLAV_C",
+  "GENERAR_REPORTE",
+  "DEFINIR_GLOBALES",
+  "COMPARE",
+  "STRING",
+  "DOUBLE",
+  "TITULO",
+  "GRAFICA_BARRAS",
+  "EJEX",
+  "VALOR_EJEX",
+  "VALORES",
+  "TITULOX",
+  "TITULOY",
+  "GRAFICA_PIE",
+  "ARCHIVO",
+  "GRAFICA_LINE",
+  "PAR_IZQ",
+  "PAR_DER",
+  "LLAV_IZQ",
+  "LLAV_DER",
   "COMA",
-  "PYCOMA",
-  "ASIGNA",
-  "PRINT"
+  "PTCOMA",
+  "DOSPT",
+  "IGUAL",
+  "DOLLAR"
   };
 }
 
