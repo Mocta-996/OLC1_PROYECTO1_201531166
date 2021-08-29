@@ -51,11 +51,7 @@ GRAFICA_PIE ="graficapie"
 GRAFICA_LINE ="graficalineas"
 ARCHIVO ="archivo"
 
-INT1     = "int"
-CHAR1    = "char"
-PUB      = "public"
-PRI      = "private"
-VOI      = "void"
+
 
 //expresiones
 
@@ -66,8 +62,8 @@ DECIMAL = [0-9]+("."[  |0-9]+)?
 ID      = [A-Za-zñÑ][_0-9A-Za-zñÑ]*
 CADENA  = (\"([^\"\n]|(\\\"))*\")+
 CADENA_SIMP  = (\'([^\'\n]|(\\\'))*\')+
-COMENTARIO_LINEA =  ("##".\r\n)|("##".\n)|("##".*\r)
 COMENTARIO_MULINEA ="#*""/"*([^*/]|[^*]"/"|"*"[^/])*"*"*"*#"
+COMENTARIO_LINEA =("##".*\r\n+)|("##".*\n+)|("#".*\r+)
 VALOR_EJEX  = ("["([^\n]|(\\))*"]")+
 
 
@@ -76,11 +72,7 @@ ENTER   = [\ \n]
 
 %%
 
-<YYINITIAL> {INT1}      { return new Symbol(sym.INT1, yyline, yycolumn,"entero");}
-<YYINITIAL> {CHAR1}     { return new Symbol(sym.CHAR1, yyline, yycolumn,"caracter");}
-<YYINITIAL> {PUB}       { return new Symbol(sym.PUB, yyline, yycolumn,"publico");}
-<YYINITIAL> {PRI}       { return new Symbol(sym.PRI, yyline, yycolumn,"privado");}
-<YYINITIAL> {VOI}       { return new Symbol(sym.VOI, yyline, yycolumn,yytext());}
+
 
 <YYINITIAL> {COMPARE}    { return new Symbol(sym.COMPARE, yyline, yycolumn,yytext());}
 <YYINITIAL> {STRING}     { return new Symbol(sym.STRING, yyline, yycolumn,yytext());}
@@ -114,6 +106,7 @@ ENTER   = [\ \n]
 <YYINITIAL> {ID}        {return new Symbol(sym.ID, yyline, yycolumn,yytext());}
 <YYINITIAL> {CADENA}    {return new Symbol(sym.CADENA, yyline, yycolumn,yytext());}
 <YYINITIAL> {CADENA_SIMP}    {return new Symbol(sym.CADENA_SIMP, yyline, yycolumn,yytext());}
+
 <YYINITIAL> {COMENTARIO_LINEA}    {System.out.println("Este es un comentario:"+yytext());} 
 <YYINITIAL> {COMENTARIO_MULINEA}    {System.out.println("Este es un comentario:"+yytext());} 
 <YYINITIAL> {VALOR_EJEX}   {return new Symbol(sym.VALOR_EJEX, yyline, yycolumn,yytext());}

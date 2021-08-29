@@ -9,6 +9,10 @@ import java.io.StringReader;
 import Analisis.parser;
 import Analisis.scanner;
 
+import Data.Data;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 //import AnalisisReporte.parser;
 //import AnalisisReporte.scanner;
 /**
@@ -27,27 +31,28 @@ public class OLC1_P1_201531166 {
            try {
             //String texto="   llamada1(); \nllamada2(1,2,3,\"hola\",var1);\n const archivo1 = require(\"../Carpeta1/archivo1 \")\n var archivo2 = require(\"../controller/Carpeta2/archivo2\") ";
             
-            String texto= " generarreporteestadistico {\n definirglobales{ string repo = \"hola\" ;"
-                    + "\n double po1 = ${PuntajeEspecifico ,\"hola\",\"hola2\"};"
-                    + ""
-                    + "}"
-                    + "\nGraficaBarras{Titulo:Reporte1;"
-                    + "Ejex: [\"Clase 1\", var1, \"Método 1\"];"
-                    + "\n Valores: [ pe1, po1, pe2, po2, pe3, ${ PuntajeEspecifico, \"archivo1.js\", \"clase\", \"clase3\"} ];"
-                    + "TituloX: \"Atributo\";" 
-                    + "TituloY: \"Puntaje\"; "
-                    + "}"
-                    + "graficapie{"
-                    + "\n Titulo: reporte1; "
-                    + "\n Ejex: [ \"Probabilidad Esperada clase 1\", \"Probabilidad Obtenida Clase 1\", var2];"
-                    + "\nValores: [ pe1, po1, pe2, po2, pe3, ${ PuntajeEspecifico, \"archivo1.js\", \"clase\"} ];"
-                    + "}"
-                    + "GraficaLineas{ "
-                    + "Titulo: reporteResumen; "
-                    + "Archivo: \"archivo 1\";"
-                    + "}"
-                    
-                    + "}";
+            String texto= "##Este es un ejemplo de un archivo de reportería FCA\n" +
+"GenerarReporteEstadistico{\n" +
+"\n" +
+"    definirglobales{\n" +
+"        string reporteResumen = \"Reporte de Archivo file_1.js de los proyectos\";\n" +
+"    }\n" +
+"\n" +
+"    #*\n" +
+"    Este comentario debería ser ignorado 189214'!\"\"$%$&\"#$\"#\"#4\n" +
+"    *#\n" +
+"\n"+ "##Cargamos los proyectos correspondientes" +
+                 
+"\n    COMPARE(\"C:\\Users\\Pilo Tuy\\Downloads\\ArchivosPruebamaster\\ArchivosPruebamaster\\Proyecto 1\\Pruebas\\Prueba1\\ProyectoA\", \"C:\\Users\\Pilo Tuy\\Downloads\\ArchivosPruebamaster\\ArchivosPruebamaster\\Proyecto 1\\Pruebas\\Prueba1\\ProyectoB\");\n" +
+"\n" +
+"    GraficaLineas{\n" +
+"        TiTulO: reporteResumen; \n" +
+"        ArChIvO: \"file_1.js\";\n" +
+"    }\n" +
+"\n" +
+"\n" +
+"\n" +
+"}";
             System.out.println("Inicia el analisis...\n");
             scanner scan = new scanner(new BufferedReader( new StringReader(texto)));
             parser parser = new parser(scan);
@@ -56,6 +61,19 @@ public class OLC1_P1_201531166 {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        Data r  = new Data();
+        /*try {
+            r.Generar_reporte();
+        } catch (IOException ex) {
+            Logger.getLogger(OLC1_P1_201531166.class.getName()).log(Level.SEVERE, null, ex);
+        }*/
+        // r.Recorrer_gbarras();
+        // r.Recorrer_varglobales();
+        // r.Recorrer_glinea();
+        // r.Recorrer_gpie();
+        // r.Recorrer_path();
+        r.Cargar_archivos();
+        
     }
     
 }

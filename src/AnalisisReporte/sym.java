@@ -8,56 +8,52 @@ package AnalisisReporte;
 /** CUP generated class containing symbol constants. */
 public class sym {
   /* terminals */
-  public static final int INT1 = 7;
-  public static final int PAR_DER = 13;
-  public static final int DIFERENCIA = 26;
-  public static final int POR = 36;
-  public static final int CONST = 24;
-  public static final int IGUALACION = 25;
+  public static final int CONSOLA = 24;
+  public static final int PAR_DER = 8;
+  public static final int ENTER = 18;
+  public static final int DIFERENCIA = 21;
+  public static final int CONST = 19;
+  public static final int POR = 32;
+  public static final int IGUALACION = 20;
   public static final int ENTERO = 3;
-  public static final int CASE = 46;
-  public static final int PRI = 10;
-  public static final int DOSPT = 19;
-  public static final int FOR = 42;
-  public static final int PUB = 9;
-  public static final int NOT = 33;
-  public static final int AND = 31;
-  public static final int IGUAL = 18;
-  public static final int OR = 32;
-  public static final int CHAR1 = 8;
-  public static final int IF = 40;
-  public static final int MAYOR_Q = 28;
-  public static final int LLAV_IZQ = 14;
+  public static final int CASE = 42;
+  public static final int DOSPT = 14;
+  public static final int FOR = 38;
+  public static final int NOT = 29;
+  public static final int AND = 27;
+  public static final int IGUAL = 13;
+  public static final int OR = 28;
+  public static final int IF = 36;
+  public static final int MAYOR_Q = 23;
+  public static final int LLAV_IZQ = 9;
   public static final int ID = 2;
-  public static final int VOI = 11;
   public static final int EOF = 0;
   public static final int DECIMAL = 4;
   public static final int CADENA_SIMP = 6;
-  public static final int MENOR_Q = 27;
-  public static final int CLASE = 21;
+  public static final int MENOR_Q = 22;
+  public static final int CLASE = 15;
   public static final int error = 1;
-  public static final int COMA = 16;
+  public static final int COMA = 11;
   public static final int CADENA = 5;
-  public static final int MODULO = 39;
-  public static final int MENOS = 35;
-  public static final int REQUIRE = 49;
-  public static final int BREAK = 47;
-  public static final int PAR_IZQ = 12;
-  public static final int SWITCH = 45;
-  public static final int POTENCIA = 38;
-  public static final int ELSE = 41;
-  public static final int WHILE = 44;
-  public static final int DEFAULT = 48;
-  public static final int MAYOR_IGUAL = 30;
-  public static final int LET = 22;
-  public static final int PTCOMA = 17;
-  public static final int LLAV_DER = 15;
-  public static final int MENOR_IGUAL = 29;
-  public static final int DIVISION = 37;
-  public static final int VAR = 23;
-  public static final int DO = 43;
-  public static final int PRINT = 20;
-  public static final int MAS = 34;
+  public static final int MODULO = 35;
+  public static final int MENOS = 31;
+  public static final int REQUIRE = 45;
+  public static final int BREAK = 43;
+  public static final int PAR_IZQ = 7;
+  public static final int SWITCH = 41;
+  public static final int POTENCIA = 34;
+  public static final int ELSE = 37;
+  public static final int WHILE = 40;
+  public static final int DEFAULT = 44;
+  public static final int MAYOR_IGUAL = 26;
+  public static final int LET = 16;
+  public static final int PTCOMA = 12;
+  public static final int LLAV_DER = 10;
+  public static final int MENOR_IGUAL = 25;
+  public static final int DIVISION = 33;
+  public static final int VAR = 17;
+  public static final int DO = 39;
+  public static final int MAS = 30;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
@@ -66,11 +62,6 @@ public class sym {
   "DECIMAL",
   "CADENA",
   "CADENA_SIMP",
-  "INT1",
-  "CHAR1",
-  "PUB",
-  "PRI",
-  "VOI",
   "PAR_IZQ",
   "PAR_DER",
   "LLAV_IZQ",
@@ -79,15 +70,16 @@ public class sym {
   "PTCOMA",
   "IGUAL",
   "DOSPT",
-  "PRINT",
   "CLASE",
   "LET",
   "VAR",
+  "ENTER",
   "CONST",
   "IGUALACION",
   "DIFERENCIA",
   "MENOR_Q",
   "MAYOR_Q",
+  "CONSOLA",
   "MENOR_IGUAL",
   "MAYOR_IGUAL",
   "AND",

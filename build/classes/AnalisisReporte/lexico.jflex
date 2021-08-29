@@ -19,7 +19,8 @@ import java_cup.runtime.Symbol;
 %column
 %full
 %state CADENA
-%ignorecase
+%caseless
+//%ignorecase
 
 //simbolos
 
@@ -71,16 +72,9 @@ BREAK   ="break"
 CASE    ="case"
 DEFAULT ="default"
 REQUIRE = "require"
-
-INT1     = "int"
-CHAR1    = "char"
-PUB      = "public"
-PRI      = "private"
-VOI      = "void"
-PRINT    = "print"
+CONSOLA = "console.log"
 
 //expresiones
-
 ENTERO  = [0-9]+   
 DECIMAL = [0-9]+("."[  |0-9]+)?
 ID      = [A-Za-zñÑ][_0-9A-Za-zñÑ]*
@@ -108,15 +102,7 @@ ENTER   = [\ \n]
 <YYINITIAL> {BREAK}      { return new Symbol(sym.BREAK, yyline, yycolumn,yytext());}
 <YYINITIAL> {DEFAULT}      { return new Symbol(sym.DEFAULT, yyline, yycolumn,yytext());}
 <YYINITIAL> {REQUIRE}      { return new Symbol(sym.REQUIRE, yyline, yycolumn,yytext());}
-
-
-<YYINITIAL> {INT1}      { return new Symbol(sym.INT1, yyline, yycolumn,"entero");}
-<YYINITIAL> {CHAR1}     { return new Symbol(sym.CHAR1, yyline, yycolumn,"caracter");}
-<YYINITIAL> {PUB}       { return new Symbol(sym.PUB, yyline, yycolumn,"publico");}
-<YYINITIAL> {PRI}       { return new Symbol(sym.PRI, yyline, yycolumn,"privado");}
-<YYINITIAL> {VOI}       { return new Symbol(sym.VOI, yyline, yycolumn,yytext());}
-<YYINITIAL> {PRINT}     { return new Symbol(sym.PRINT, yyline, yycolumn,yytext());}
-
+<YYINITIAL> {CONSOLA}      { return new Symbol(sym.CONSOLA, yyline, yycolumn,yytext());}
 
 <YYINITIAL> {PAR_IZQ}     {return new Symbol(sym.PAR_IZQ, yyline, yycolumn,yytext());}
 <YYINITIAL> {PAR_DER}     {return new Symbol(sym.PAR_DER, yyline, yycolumn,yytext());}
@@ -154,9 +140,10 @@ ENTER   = [\ \n]
 <YYINITIAL> {COMENTARIO_LINEA}    {System.out.println("Este es un comentario:"+yytext());} 
 <YYINITIAL> {COMENTARIO_MULINEA}    {System.out.println("Este es un comentario:"+yytext());} 
 
-//<YYINITIAL> [\"]        { yybegin(CADENA); cadena+="\""; }
+
 <YYINITIAL> {SPACE}     { /*Espacios en blanco, ignorados*/ }
-<YYINITIAL> {ENTER}     { /*Saltos de linea, ignorados*/}
+//<YYINITIAL> {ENTER}     { /*Saltos de linea, ignorados*/}
+<YYINITIAL> {ENTER}    {return new Symbol(sym.ENTER, yyline, yycolumn,yytext());}
 
 
 
@@ -165,11 +152,3 @@ ENTER   = [\ \n]
         System.out.println(errLex);
 }
 
-//<CADENA> {
-//        [\"] { String tmp=cadena+"\""; cadena=""; yybegin(YYINITIAL);  return new Symbol(sym.CADENA, yychar,yyline,tmp); }
-//        [\n] {String tmp=cadena; cadena="";  
-//                System.out.println("Se esperaba cierre de cadena (\")."); 
-//                yybegin(YYINITIAL);
-//            }
-//        [^\"] { cadena+=yytext();}
-//}

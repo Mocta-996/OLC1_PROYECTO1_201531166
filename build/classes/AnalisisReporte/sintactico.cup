@@ -1,5 +1,5 @@
 package AnalisisReporte;
-
+import Data.Data;
 import java_cup.runtime.Symbol;
 
 //PARSER 
@@ -18,16 +18,18 @@ parser code
 
 action code
 {://Codigo de usuario
+    Data datos = new Data();
     String tmp="";
 :}
 
 
-terminal String ID,ENTERO,DECIMAL,CADENA,CADENA_SIMP,INT1,CHAR1,PUB,PRI,VOI;
-terminal PAR_IZQ, PAR_DER, LLAV_IZQ, LLAV_DER, COMA, PTCOMA,IGUAL,DOSPT,PRINT,CLASE,LET,VAR,CONST,IGUALACION, DIFERENCIA, MENOR_Q, MAYOR_Q,
+terminal String ID,ENTERO,DECIMAL,CADENA,CADENA_SIMP;
+terminal PAR_IZQ, PAR_DER, LLAV_IZQ, LLAV_DER, COMA, PTCOMA,IGUAL,DOSPT,CLASE,LET,VAR,ENTER,
+CONST,IGUALACION, DIFERENCIA, MENOR_Q, MAYOR_Q,CONSOLA,
 MENOR_IGUAL, MAYOR_IGUAL,AND, OR, NOT, MAS, MENOS, POR, DIVISION, POTENCIA, MODULO,IF,ELSE,FOR,DO,WHILE,SWITCH, CASE, BREAK,DEFAULT,REQUIRE;
 
-//nonterminal String  VIS,TIPO;
-nonterminal  INICIO, SENTENCIAS, S, CUERPO, C, LIST, L, 
+
+nonterminal  INICIO, SENTENCIAS, 
     CLAS,                   // no terminal reconocer clase
     MET_PARM,               // no terminal reconocer metodos con parametros
     PAR,                    // Para identificar un parametro
@@ -55,10 +57,13 @@ nonterminal  INICIO, SENTENCIAS, S, CUERPO, C, LIST, L,
     COND_WHILE,              // no terminal para las condiciones while
     SEN_SWITCH,              // no terminal para las sentencias switch
     SEN_CASE,                // no terminal para la sentencia case
-    SEN_BREAK,               // no terminal para la sentencia break
+    
     EXP_CASE,                // expresion auxiliar sentencia switch case
     LLAM_MET,               // no terminal para llamar metodos 
-    IMPORTS                 //no terminal para las expresiones de importar
+    IMPORTS,                 //no terminal para las expresiones de importar
+    SEN_CONSOLA,             // no terminal para imprimir en consola
+    OP_CONCAT,               //operaciones concatenadas
+    CONCAT_VALOR            // concatenacion del valor de las variables
 
     ;
 
@@ -71,16 +76,18 @@ nonterminal  INICIO, SENTENCIAS, S, CUERPO, C, LIST, L,
 // se inicia al analisis sintactico con inicio
 start with INICIO;
 
-INICIO ::= SENTENCIAS
+INICIO ::=  ENTER
+            |CLAS 
                 {:
                     //System.out.println(tmp);
                     tmp="";
                 :}
 ;
 
-SENTENCIAS ::= SENTENCIAS CLAS
-    |SENTENCIAS MET_PARM
+SENTENCIAS ::=
+     SENTENCIAS MET_PARM
     |SENTENCIAS MET
+    |SENTENCIAS ENTER
     |SENTENCIAS VARIABLE
     |SENTENCIAS SEN_IF
     |SENTENCIAS SEN_FOR
@@ -89,10 +96,10 @@ SENTENCIAS ::= SENTENCIAS CLAS
     |SENTENCIAS SEN_SWITCH
     |SENTENCIAS LLAM_MET
     |SENTENCIAS IMPORTS
+    |SENTENCIAS SEN_CONSOLA
     |VARIABLE
     |MET_PARM
     |MET
-    |CLAS
     |SEN_IF
     |SEN_FOR
     |SEN_DO
@@ -100,6 +107,9 @@ SENTENCIAS ::= SENTENCIAS CLAS
     |SEN_SWITCH
     |LLAM_MET
     |IMPORTS
+    |SEN_CONSOLA
+    |ENTER
+    
 
 ;
 
@@ -108,7 +118,10 @@ CLAS ::= CLASE ID:id
     {:
         System.out.println("Se encontro una clase: "+id);
     :}
-    PAR_IZQ PAR_DER LLAV_IZQ LLAV_DER   
+    LLAV_IZQ 
+    SENTENCIAS
+    LLAV_DER  
+ 
 ; // Falta agregar el cuerpo de la clase
 
 // ================ Declaracion de las transiciones metodos con parametros ================
@@ -118,6 +131,7 @@ MET_PARM ::= ID:id PAR_IZQ PAR PAR_DER LLAV_IZQ
         System.out.println("El metodo: "+id);
         System.out.println("Con parametros: "+tmp);
     :}
+    SENTENCIAS
     LLAV_DER
     ; // Falta agregar el cuerpo del metodo
 
@@ -137,6 +151,10 @@ P_AUX ::= ID:id
             {:
             tmp+=a;
             :} 
+        |CADENA_SIMP:a
+            {:
+            tmp+=a;
+            :} 
         |ENTERO:a
             {:
             tmp+=a;
@@ -153,13 +171,20 @@ MET ::= ID:id PAR_IZQ PAR_DER LLAV_IZQ
         System.out.println("El metodo: "+id);
         System.out.println("No tiene parametros");
     :}
+    SENTENCIAS
     LLAV_DER
     // falta cuerpo del metodo
     ;  
 // ================ Declaracion de las transiciones  identificar variables ================
-
+// ID:id
 VARIABLE ::= TIPO_VAR:tipo ID:id IGUAL VALOR:value
         {:System.out.println("Varibale: "+id+" tipo: "+tipo +" con valor: "+value);:}
+        | TIPO_VAR ID:id PTCOMA
+         {:System.out.println("Varibale: "+id);:}
+        | TIPO_VAR ID:id 
+         {:System.out.println("Varibale: "+id);:}
+        | ID:id IGUAL VALOR:v
+        {:System.out.println("Varibale: "+id +"valor "+v);:}
         ; 
 
 TIPO_VAR ::= VAR:va
@@ -175,47 +200,63 @@ TIPO_VAR ::= VAR:va
                     RESULT=cs;
             :}
         ;
-VALOR ::= ENTERO:e PTCOMA
+VALOR ::= VALOR:a ENTERO:e 
+            {:
+                    RESULT=a+""+e;
+            :}
+        |VALOR:a DECIMAL:e 
+            {:
+                    RESULT=a+""+e;
+            :}
+        |VALOR:a CADENA:e 
+            {:
+                     RESULT=a+""+e;
+            :}
+        |VALOR:a CADENA_SIMP:e
+            {:
+                    RESULT=a+""+e;
+            :}
+        |VALOR:a ARITMETICO:e
+            {:
+                    RESULT=a+""+e;
+            :}
+        //|VALOR:a ID:e
+        //    {:
+        //            RESULT=a+""+e;
+        //    :}
+        |ENTERO:e 
             {:
                     RESULT=e;
             :}
-        |DECIMAL:e PTCOMA
+        |DECIMAL:e 
             {:
                     RESULT=e;
             :}
-        |CADENA:ca PTCOMA
+        |CADENA:ca 
             {:
                     RESULT=ca;
             :}
-        |CADENA_SIMP:ca PTCOMA
+        |CADENA_SIMP:ca 
             {:
                     RESULT=ca;
             :}
-        |ID:ca PTCOMA                       // para booleanos
+        |ID:ca                // para booleanos
             {:
                     RESULT=ca;
             :}
-        |ENTERO:e
-            {:
-                    RESULT=e;
-            :}
-        |DECIMAL:e
-            {:
-                    RESULT=e;
-            :}
-        |CADENA:ca
+        
+        |ARITMETICO:ca                         
             {:
                     RESULT=ca;
             :}
-        |CADENA_SIMP:ca
-            {:
-                    RESULT=ca;
+        |VALOR:a PTCOMA
+             {:
+                    RESULT=a;
             :}
-        |ID:ca                          // para booleanos
-            {:
-                    RESULT=ca;
-            :}
+        |PTCOMA
         ;
+
+
 
 // ================ Transiciones sentencia If ================
 
@@ -224,9 +265,11 @@ SEN_IF ::= IF PAR_IZQ CONDICION:a PAR_DER
            System.out.println("sentencia if condicion: "+a );
         :}
         LLAV_IZQ 
+                SENTENCIAS
                 // cuerpo de la sentencia if
         LLAV_DER
         | ELSE LLAV_IZQ 
+                SENTENCIAS
                 // cuerpo de la sentencia if
                {:System.out.println("if con else" );:}
         LLAV_DER
@@ -235,6 +278,7 @@ SEN_IF ::= IF PAR_IZQ CONDICION:a PAR_DER
            System.out.println("sentencia if condicion: "+a );
         :}
         LLAV_IZQ 
+                SENTENCIAS
                 // cuerpo de la sentencia if
         LLAV_DER
         ;
@@ -337,7 +381,8 @@ SEN_FOR ::= FOR PAR_IZQ
                 System.out.println("Ciclo for con condiciones: "+c );
                 :}
             PAR_DER LLAV_IZQ
-             // cuerpo del ciclo for
+            SENTENCIAS
+            // cuerpo del ciclo for
             LLAV_DER
             ;
 
@@ -423,6 +468,8 @@ AUMENTO ::= AUMENTO:a ARITMETICO:b
 
 // ================ Transiciones sentencia DO ================
 SEN_DO ::= DO LLAV_IZQ 
+            //cuerpo do while
+            SENTENCIAS
            LLAV_DER
           WHILE PAR_IZQ COND_WHILE:c 
         {: System.out.println("sentencia do while : "+c ); :}
@@ -436,7 +483,8 @@ SEN_WHILE ::= WHILE PAR_IZQ COND_WHILE:a
             :}
             PAR_DER 
             LLAV_IZQ
-           
+           // cuerpo ciclo while 
+            SENTENCIAS 
             LLAV_DER
             ;
 COND_WHILE ::= CONDICION:a
@@ -455,10 +503,13 @@ SEN_SWITCH ::=SWITCH PAR_IZQ ID:id PAR_DER LLAV_IZQ
                 System.out.println("switch case parametro : "+id );     
             :}
             SEN_CASE:a
+                
                 {:
                 System.out.println("casos : "+a );     
                 :}
+                 
             DEFAULT
+                SENTENCIAS
                 //agregar la accion para el default
             LLAV_DER
             ;
@@ -470,6 +521,7 @@ SEN_CASE ::= SEN_CASE CASE EXP_CASE:exp DOSPT
              {:
                 System.out.println("casos : "+exp );     
              :}
+             SENTENCIAS
             //agregar la accion a realizar
             BREAK PTCOMA
             | CASE EXP_CASE:exp DOSPT 
@@ -477,6 +529,7 @@ SEN_CASE ::= SEN_CASE CASE EXP_CASE:exp DOSPT
              {:
                 System.out.println("casos : "+exp );     
              :}
+             SENTENCIAS
             //agregar la accion a realizar
             BREAK PTCOMA
             ;
@@ -534,4 +587,13 @@ ARITMETICO ::=
                 RESULT = a ;
             :} 
             ;
-            
+//=============================== Transiciones para imprimir en pantalla ==============================
+// se utiliza el no terminal valor para detectar que argumentos entran
+// entre par_izq y par derecha va op concat :a VALOR:a
+SEN_CONSOLA ::= CONSOLA PAR_IZQ VALOR:a  PAR_DER PTCOMA
+
+             {:
+               System.out.println( a);
+            :}
+          
+            ;
