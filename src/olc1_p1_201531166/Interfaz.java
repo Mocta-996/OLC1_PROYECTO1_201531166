@@ -5,22 +5,38 @@
  */
 package olc1_p1_201531166;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
+import static olc1_p1_201531166.Iniciar_Analisis.Generar_Reportes;
 
 /**
  *
  * @author Pilo
  */
 public class Interfaz extends javax.swing.JFrame {
-
+   // private final JFileChooser chooser;
     /**
      * Creates new form Interfaz
      */
     public Interfaz() {
         initComponents();
+        nuevaPestaña();
     }
 
     /**
@@ -33,12 +49,11 @@ public class Interfaz extends javax.swing.JFrame {
     private void initComponents() {
 
         Pestañas = new javax.swing.JTabbedPane();
-        jPanel1 = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
         Consola = new javax.swing.JTextField();
         CerrarP = new javax.swing.JButton();
         CrearP = new javax.swing.JButton();
-        Ejecutar = new javax.swing.JButton();
+        Generar_reporte = new javax.swing.JButton();
+        Ejecutar1 = new javax.swing.JButton();
         Archivo = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
@@ -50,33 +65,7 @@ public class Interfaz extends javax.swing.JFrame {
         setTitle("FIUSAC Copy Analyzer");
         setBackground(new java.awt.Color(51, 51, 51));
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 683, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 471, Short.MAX_VALUE)
-        );
-
-        Pestañas.addTab("tab1", jPanel1);
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 683, Short.MAX_VALUE)
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 471, Short.MAX_VALUE)
-        );
-
-        Pestañas.addTab("tab2", jPanel2);
-
-        Consola.setText("jTextField1");
+        Consola.setText("Ingrese un archivo !");
         Consola.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ConsolaActionPerformed(evt);
@@ -97,10 +86,17 @@ public class Interfaz extends javax.swing.JFrame {
             }
         });
 
-        Ejecutar.setText("Ejecutar");
-        Ejecutar.addActionListener(new java.awt.event.ActionListener() {
+        Generar_reporte.setText("Reporte");
+        Generar_reporte.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                EjecutarActionPerformed(evt);
+                Generar_reporteActionPerformed(evt);
+            }
+        });
+
+        Ejecutar1.setText("Ejecutar");
+        Ejecutar1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Ejecutar1ActionPerformed(evt);
             }
         });
 
@@ -124,6 +120,11 @@ public class Interfaz extends javax.swing.JFrame {
         jMenu1.add(jMenuItem2);
 
         jMenuItem3.setText("Guardar como");
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
         jMenu1.add(jMenuItem3);
 
         Archivo.add(jMenu1);
@@ -135,20 +136,21 @@ public class Interfaz extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(Pestañas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(26, 26, 26)
-                        .addComponent(Consola, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(25, 25, 25)
-                        .addComponent(CrearP, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(28, 28, 28)
-                        .addComponent(CerrarP, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(58, 58, 58)
-                        .addComponent(Ejecutar, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(57, Short.MAX_VALUE))
+                .addGap(25, 25, 25)
+                .addComponent(CrearP, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(28, 28, 28)
+                .addComponent(CerrarP, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(Ejecutar1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(32, 32, 32)
+                .addComponent(Generar_reporte, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(88, 88, 88))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(112, 112, 112)
+                .addComponent(Pestañas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 536, Short.MAX_VALUE)
+                .addComponent(Consola, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(33, 33, 33))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -156,12 +158,13 @@ public class Interfaz extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(Pestañas, javax.swing.GroupLayout.PREFERRED_SIZE, 497, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Consola, javax.swing.GroupLayout.PREFERRED_SIZE, 460, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(Consola, javax.swing.GroupLayout.PREFERRED_SIZE, 479, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(CrearP, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(CerrarP, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Ejecutar, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(Generar_reporte, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Ejecutar1, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(18, Short.MAX_VALUE))
         );
 
@@ -170,29 +173,11 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
         // TODO add your handling code here:
+        Guardar();
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void AbrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AbrirActionPerformed
-        // CREACION DE UN NUEVO ARCHIVO .OLC
-        JFileChooser nuevoarchivo = new JFileChooser();
-        nuevoarchivo.setApproveButtonText("Guardar");
-        nuevoarchivo.showSaveDialog(null);
-        File archivo = new File(nuevoarchivo.getSelectedFile()+".olc");
-        
-        try{
-            BufferedWriter  salida= new BufferedWriter(new FileWriter(archivo));
-            
-           
-        }catch (Exception e){
-        }
-        // SE ASIGNA EL NOMBRE Y LA RUTA A LA VARIABLES GLOBALES
-        /*nombre_archivo = nuevoarchivo.getSelectedFile().getName();
-        path_archivo =nuevoarchivo.getSelectedFile().getPath();
-        a_entrada.setText("");
-        // FALTA AGREGAR FUNCIONES PARA LIMPIAR:
-        // -TERMINAL
-        // - LABELS ETC
-        */
+        Abrir();
     }//GEN-LAST:event_AbrirActionPerformed
 
     private void ConsolaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConsolaActionPerformed
@@ -201,15 +186,32 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void CerrarPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CerrarPActionPerformed
         // TODO add your handling code here:
+        cerrarpestaña();
     }//GEN-LAST:event_CerrarPActionPerformed
 
     private void CrearPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrearPActionPerformed
         // TODO add your handling code here:
+        nuevaPestaña();
     }//GEN-LAST:event_CrearPActionPerformed
 
-    private void EjecutarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EjecutarActionPerformed
+    private void Generar_reporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Generar_reporteActionPerformed
+        try {
+            // TODO add your handling code here:
+            Generar_Reportes();
+        } catch (IOException ex) {
+            Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_Generar_reporteActionPerformed
+
+    private void Ejecutar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Ejecutar1ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_EjecutarActionPerformed
+        Ejecutar();
+    }//GEN-LAST:event_Ejecutar1ActionPerformed
+
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+        // TODO add your handling code here:
+        Guardar_como();
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -252,13 +254,152 @@ public class Interfaz extends javax.swing.JFrame {
     public javax.swing.JButton CerrarP;
     public javax.swing.JTextField Consola;
     public javax.swing.JButton CrearP;
-    public javax.swing.JButton Ejecutar;
+    public javax.swing.JButton Ejecutar1;
+    public javax.swing.JButton Generar_reporte;
     public javax.swing.JTabbedPane Pestañas;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     // End of variables declaration//GEN-END:variables
+
+//============================================== FUNCIONES UTILIZADAS =================================================
+
+    // ============================================ CREACION DE PESTAÑAS ====================================================
+    public void nuevaPestaña(String texto, String titulo, String path) {
+        Pestañas.add(new Tabs(texto, path), titulo);
+        Pestañas.setSelectedIndex(Pestañas.getTabCount() - 1);
+    }
+
+    public void cerrarpestaña() {
+        if (Pestañas.getTabCount() > 0) {
+            Tabs t = (Tabs) Pestañas.getSelectedComponent();
+            if (t.isEmptyText()) {
+                int a = Pestañas.getSelectedIndex();
+                Pestañas.remove(a);
+                if (a < Pestañas.getTabCount()) {
+                    Pestañas.setSelectedIndex(a);
+                } else {
+                    Pestañas.setSelectedIndex(Pestañas.getTabCount() - 1);
+                }
+                if (Pestañas.getTabCount() == 0) {
+                    nuevaPestaña();
+                }
+                return;
+            }
+            int r = JOptionPane.showConfirmDialog(this, "¿Desea guardar el archivo?");
+            switch (r) {
+                case 0:
+                    if (t.getPath() == null) {
+                      //  GuardarArchivo();
+                    } else {
+                        //Archivo.GuardarArchivo(t.getText(), t.getPath());
+                    }
+                case 1:
+                    int a = Pestañas.getSelectedIndex();
+                    Pestañas.remove(a);
+                    if (a < Pestañas.getTabCount()) {
+                        Pestañas.setSelectedIndex(a);
+                    } else {
+                        Pestañas.setSelectedIndex(Pestañas.getTabCount() - 1);
+                    }
+                    break;
+            }
+            if (Pestañas.getTabCount() == 0) {
+                nuevaPestaña();
+            }
+        }
+    }
+
+    public void nuevaPestaña() {
+        Pestañas.add(new Tabs(), "Pestaña" + (Pestañas.getTabCount() + 1));
+        Pestañas.setSelectedIndex(Pestañas.getTabCount() - 1);
+    }
+
+   // ============================================ ABRIR ARCHIVO ====================================================
+    public void Abrir() {
+        JFileChooser a = new JFileChooser();
+        a.setFileFilter(new FileNameExtensionFilter("Archivo","fca"));
+        if (a.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            File archivo = a.getSelectedFile();
+            String texto = LeerArchivo(archivo);
+            System.out.println(archivo.getAbsolutePath());
+            nuevaPestaña(texto, archivo.getName(), archivo.getAbsolutePath());
+        }
+    }
+    
+    public void Guardar() {
+        Tabs t = (Tabs) Pestañas.getSelectedComponent();
+        if (t.getPath() != null) {
+            Guardar_Archivo(t.getText(), t.getPath());
+        } else {
+            Guardar_como();
+        }
+    }
+
+    public void Guardar_como() {
+        JFileChooser a = new JFileChooser();
+        if (a.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+            String ruta = a.getSelectedFile().toString();
+            Tabs p= (Tabs) Pestañas.getSelectedComponent();
+            p.setPath(ruta);
+            Pestañas.setTitleAt(Pestañas.getSelectedIndex(), new File(ruta).getName());
+            Guardar_Archivo(p.getText(), ruta);
+        }
+    }
+    
+    // ========================================= EJECUTAR ARCHIVO ====================================================
+     private void Ejecutar() {
+        String texto_consola =""; 
+        Tabs tab = ((Tabs) Pestañas.getSelectedComponent());
+        if (tab.isEmptyText()) {
+            JOptionPane.showMessageDialog(this, "VACIO !");
+           
+        }
+        else{
+        
+        
+        
+        }
+        Consola.setText(texto_consola);
+        Tabs t = (Tabs) Pestañas.getSelectedComponent();
+        texto_consola +="\nIniciando Analisis Lexico"
+                + "\n Analizando Archivo: "+Pestañas.getTitleAt(Pestañas.getSelectedIndex());
+        Consola.setText(texto_consola);
+        String p = t.getPath();
+        Iniciar_Analisis.Iniciar(p);
+       
+    }
+    // =================================== FUNCIONES AUXILIARES =======================================
+       public static String LeerArchivo(File archivo) {
+        String l, texto = "";
+        if (archivo != null) {
+            try {
+                FileReader archivos = new FileReader(archivo);
+                try (BufferedReader lee = new BufferedReader(archivos)) {
+                    while ((l = lee.readLine()) != null) {
+                        texto += l + "\n";
+                    }
+                }
+                return texto;
+            } catch (IOException ex) {
+                System.err.println("Error al abrir archivo: " + ex.getMessage());
+            }
+        }
+        return null;
+    }
+
+       public static void Guardar_Archivo(String c,String p){
+        File a = new File(p);
+        try {
+                FileWriter archivos = new FileWriter(a);
+                try (BufferedWriter w = new BufferedWriter(archivos)) {
+                    w.write(c);
+                }
+            } catch (IOException ex) {
+                System.err.println("Error al guardar archivo " + ex.getMessage());
+            }
+    }
+       
+       
 }

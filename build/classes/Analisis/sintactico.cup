@@ -1,5 +1,6 @@
 package Analisis;
 import Data.Data;
+import java.util.HashMap;
 import java_cup.runtime.Symbol;
 
 //PARSER 
@@ -8,10 +9,26 @@ parser code
     
     public void syntax_error(Symbol s){
         System.out.println("Error R de sintaxis: "+ s.value +" Linea "+(s.left+1)+" columna "+(s.right+1) );
+        String a= s.value.toString();
+        String b= s.value.toString();
+        int cc = (s.left+1);
+        int dd= (s.right+1);
+        String c= String.valueOf(cc);
+        String d= String.valueOf(dd);
+        Data datos = new Data();
+        datos.errores(a,"Error Sintactico: se esperaba: "+b,c,d,"Archivo.fca");
     }
 
     public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{ 
         System.out.println("Error NR de sintaxis: "+ s.value +" Linea "+(s.left+1)+" columna "+(s.right+1) );
+        String a= s.value.toString();
+        String b= s.value.toString();
+        int cc = (s.left+1);
+        int dd= (s.right+1);
+        String c= String.valueOf(cc);
+        String d= String.valueOf(dd);
+        Data datos = new Data();
+        datos.errores(a,"Error No Recuperable : "+b,c,d,"Archivo.fca");
     }
 
 :}
@@ -20,6 +37,9 @@ action code
 {://Codigo de usuario
     // constructor a la clase data
     Data datos = new Data();
+    public  HashMap<String,String> grafica_barras  = new HashMap<>();
+    public  HashMap<String,String> grafica_pie  = new HashMap<>();
+    public  HashMap<String,String> grafica_linea  = new HashMap<>();
     // 
 
     String tmp="";
@@ -65,7 +85,8 @@ start with INICIO;
 INICIO ::= GENERAR_REPORTE LLAV_IZQ INSTRUCCION
              
              LLAV_DER
-           
+           |error LLAV_DER
+           |error LLAV_IZQ
         ;
 
 
@@ -89,6 +110,7 @@ CARGAR ::=  COMPARE PAR_IZQ PATH:a COMA PATH:b  PAR_DER PTCOMA
             	datos.Almacenar_Path("Archivo1",auxa);
                 datos.Almacenar_Path("Archivo2",auxb);
             :}
+            |error PTCOMA
             ;
 
 PATH ::= CADENA:a
@@ -99,7 +121,7 @@ PATH ::= CADENA:a
 
 //============================= DEFINIR VARIABLES GLOBALES ==============================
 DEFIN_VAR ::= DEFINIR_GLOBALES LLAV_IZQ VARIABLES:a LLAV_DER
-           
+            |LLAV_DER
             ;
 
 VARIABLES ::= VARIABLES:d  TIPO_V:c ID:a IGUAL VALOR:b  PTCOMA
@@ -116,7 +138,7 @@ VARIABLES ::= VARIABLES:d  TIPO_V:c ID:a IGUAL VALOR:b  PTCOMA
              	String auxb= b.toString();
             	datos.Almacenar_varglobales(auxa,auxb);
             :}
-            
+            |error PTCOMA
             ;
 
 TIPO_V ::= STRING:a
@@ -157,49 +179,66 @@ CONT ::= CONT:b COMA ID:a
 //============================= DEFINIR PARAMETRO DE GRAFICA DE BARRAS ==============================
 GRAF_BARRAS ::= GRAFICA_BARRAS LLAV_IZQ
             INS_GBARRAS
+            {:
+            String a=grafica_barras.get("titulo");
+            String b=grafica_barras.get("ejex");
+            String c=grafica_barras.get("valores");
+            String d=grafica_barras.get("titulox");
+            String e=grafica_barras.get("tituloy");
+            datos.Almacenar_gbarras(a,b,c,d,e);
+            :}
             LLAV_DER 
+         
             ;
 
 INS_GBARRAS ::= INS_GBARRAS TIT_GBARRAS:a
                 {://System.out.println("TITULO:"+ a);
                 String auxa= a.toString();
-            	datos.Almacenar_gbarras("titulo",auxa);
+                grafica_barras.put("titulo",auxa);
+            	//datos.Almacenar_gbarras("titulo",auxa);
                 :}
             |INS_GBARRAS VAL_EJEX:a
                 {://System.out.println("Valores eje x:"+ a);
-             	String auxa= a.toString();
-            	datos.Almacenar_gbarras("ejex",auxa);
+                String auxa= a.toString();
+             	grafica_barras.put("ejex",auxa);
+            	//datos.Almacenar_gbarras("ejex",auxa);
                 :}
             |INS_GBARRAS VAL_VALORES:a
                 {://System.out.println("Valores Ingresados:"+ a);
                 String auxa= a.toString();
-            	datos.Almacenar_gbarras("valores",auxa);
+                grafica_barras.put("valores",auxa);
+            	//datos.Almacenar_gbarras("valores",auxa);
                 :}
             |INS_GBARRAS TIT_X:a
                 {://System.out.println("Titulo del eje x:"+ a);
                 String auxa= a.toString();
-            	datos.Almacenar_gbarras("titulox",auxa);
+                grafica_barras.put("titulox",auxa);
+            	//datos.Almacenar_gbarras("titulox",auxa);
                 :}
             |INS_GBARRAS TIT_Y:a
                 {://System.out.println("Titulo del eje y:"+ a);
                 String auxa= a.toString();
-            	datos.Almacenar_gbarras("tituloy",auxa);
+                grafica_barras.put("tituloy",auxa);
+            	//datos.Almacenar_gbarras("tituloy",auxa);
                 :}
 
             |TIT_GBARRAS:a
                 {://System.out.println("TITULO:"+ a);
                 String auxa= a.toString();
-            	datos.Almacenar_gbarras("titulo",auxa);
+                grafica_barras.put("titulo",auxa);
+            	//datos.Almacenar_gbarras("titulo",auxa);
                 :}
             |VAL_EJEX:a
                 {://System.out.println("Valores eje x:"+ a);
              	String auxa= a.toString();
-            	datos.Almacenar_gbarras("ejex",auxa);
+             	grafica_barras.put("ejex",auxa);
+            	//datos.Almacenar_gbarras("ejex",auxa);
                 :}
             |VAL_VALORES:a
                 {://System.out.println("Valores Ingresados:"+ a);
                 String auxa= a.toString();
-            	datos.Almacenar_gbarras("valores",auxa);
+                grafica_barras.put("valores",auxa);
+            	//datos.Almacenar_gbarras("valores",auxa);
                 :}
             ;
 
@@ -233,38 +272,46 @@ TIT_Y ::=   TITULOY DOSPT ID:a PTCOMA
 
 GRAF_PIE ::= GRAFICA_PIE LLAV_IZQ 
             INS_GPIE
+            {:
+            String a=grafica_pie.get("titulo");
+            String b=grafica_pie.get("ejex");
+            String c=grafica_pie.get("valores");
+            datos.Almacenar_gpie(a,b,c);
+            :}
             LLAV_DER
+            |error LLAV_IZQ
             ;
 
 INS_GPIE ::= VAL_VALORES:a
                 {://System.out.println("Valores ingresados:"+ a);
-                    String auxa= a.toString();
-                    datos.Almacenar_gpie("valores",auxa);
+                     String auxa= a.toString();
+                    grafica_pie.put("valores",auxa);
+            	
                 :} 
             |TIT_GBARRAS:a
                 {://System.out.println("TITULO:"+ a); 
                     String auxa= a.toString();
-                    datos.Almacenar_gpie("titulo",auxa);
+                    grafica_pie.put("titulo",auxa);
                 :}
             |VAL_EJEX:a
                 {://System.out.println("Valores eje x:"+ a); 
                     String auxa= a.toString();
-                    datos.Almacenar_gpie("ejex",auxa);
+                    grafica_pie.put("ejex",auxa);
                 :}
             |INS_GPIE TIT_GBARRAS:a
                 {://System.out.println("TITULO:"+ a); 
                     String auxa= a.toString();
-                    datos.Almacenar_gpie("titulo",auxa);
+                    grafica_pie.put("titulo",auxa);
                 :}
             |INS_GPIE VAL_EJEX:a
                 {://System.out.println("Valores eje x:"+ a); 
                     String auxa= a.toString();
-                    datos.Almacenar_gpie("ejex",auxa);
+                    grafica_pie.put("ejex",auxa);
                 :}
             |INS_GPIE VAL_VALORES:a
                 {://System.out.println("Valores ingresados:"+ a);
                     String auxa= a.toString();
-                    datos.Almacenar_gpie("valores",auxa);
+                    grafica_pie.put("valores",auxa);
                 :} 
             
             ;
@@ -273,37 +320,44 @@ INS_GPIE ::= VAL_VALORES:a
 
 GRAF_LINEAS ::= GRAFICA_LINE LLAV_IZQ 
             INS_LINEAS
+            {:
+                String a=grafica_linea.get("titulo");
+                String b=grafica_linea.get("archivo");
+                datos.Almacenar_glinea(a,b);
+
+            :}
             LLAV_DER
+            |error LLAV_DER
             ;
 
 INS_LINEAS ::= INS_LINEAS TIT_GBARRAS:a
                 {://System.out.println("TITULO:"+ a);
                     String auxa= a.toString();
-                    datos.Almacenar_glinea("titulo",auxa);
+                    grafica_linea.put("titulo",auxa);
                 :}
             |TIT_GBARRAS:a
                 {://System.out.println("TITULO:"+ a);
                     String auxa= a.toString();
-                    datos.Almacenar_glinea("titulo",auxa);
+                    grafica_linea.put("titulo",auxa);
                 :}
             | INS_LINEAS ARCHIVO DOSPT ID:a PTCOMA
                 {://System.out.println("Archivo:"+ a);
                     String auxa= a.toString();
-                    datos.Almacenar_glinea("archivo",auxa);
+                    grafica_linea.put("archivo",auxa);
                 :}
             | INS_LINEAS ARCHIVO DOSPT CADENA:a PTCOMA
                 {://System.out.println("Archivo:"+ a);
                     String auxa= a.toString();
-                    datos.Almacenar_glinea("archivo",auxa);
+                    grafica_linea.put("archivo",auxa);
                 :}
             |ARCHIVO DOSPT ID:a PTCOMA
                 {://System.out.println("Archivo:"+ a);
                     String auxa= a.toString();
-                    datos.Almacenar_glinea("archivo",auxa);
+                    grafica_linea.put("archivo",auxa);
                 :}
             |ARCHIVO DOSPT CADENA:a PTCOMA
                 {://System.out.println("Archivo:"+ a);
                     String auxa= a.toString();
-                    datos.Almacenar_glinea("archivo",auxa);
+                    grafica_linea.put("archivo",auxa);
                 :}
             ;

@@ -8,52 +8,54 @@ package AnalisisReporte;
 /** CUP generated class containing symbol constants. */
 public class sym {
   /* terminals */
-  public static final int CONSOLA = 24;
-  public static final int PAR_DER = 8;
-  public static final int ENTER = 18;
-  public static final int DIFERENCIA = 21;
-  public static final int CONST = 19;
-  public static final int POR = 32;
-  public static final int IGUALACION = 20;
+  public static final int CONSOLA = 26;
+  public static final int PAR_DER = 10;
+  public static final int ENTER = 20;
+  public static final int DIFERENCIA = 23;
+  public static final int CONST = 21;
+  public static final int POR = 34;
+  public static final int IGUALACION = 22;
   public static final int ENTERO = 3;
-  public static final int CASE = 42;
-  public static final int DOSPT = 14;
-  public static final int FOR = 38;
-  public static final int NOT = 29;
-  public static final int AND = 27;
-  public static final int IGUAL = 13;
-  public static final int OR = 28;
-  public static final int IF = 36;
-  public static final int MAYOR_Q = 23;
-  public static final int LLAV_IZQ = 9;
+  public static final int CASE = 44;
+  public static final int DOSPT = 16;
+  public static final int COMENTARIO_LINEA = 7;
+  public static final int FOR = 40;
+  public static final int NOT = 31;
+  public static final int AND = 29;
+  public static final int IGUAL = 15;
+  public static final int OR = 30;
+  public static final int IF = 38;
+  public static final int MAYOR_Q = 25;
+  public static final int LLAV_IZQ = 11;
   public static final int ID = 2;
   public static final int EOF = 0;
   public static final int DECIMAL = 4;
   public static final int CADENA_SIMP = 6;
-  public static final int MENOR_Q = 22;
-  public static final int CLASE = 15;
+  public static final int MENOR_Q = 24;
+  public static final int CLASE = 17;
   public static final int error = 1;
-  public static final int COMA = 11;
+  public static final int COMA = 13;
   public static final int CADENA = 5;
-  public static final int MODULO = 35;
-  public static final int MENOS = 31;
-  public static final int REQUIRE = 45;
-  public static final int BREAK = 43;
-  public static final int PAR_IZQ = 7;
-  public static final int SWITCH = 41;
-  public static final int POTENCIA = 34;
-  public static final int ELSE = 37;
-  public static final int WHILE = 40;
-  public static final int DEFAULT = 44;
-  public static final int MAYOR_IGUAL = 26;
-  public static final int LET = 16;
-  public static final int PTCOMA = 12;
-  public static final int LLAV_DER = 10;
-  public static final int MENOR_IGUAL = 25;
-  public static final int DIVISION = 33;
-  public static final int VAR = 17;
-  public static final int DO = 39;
-  public static final int MAS = 30;
+  public static final int MODULO = 37;
+  public static final int MENOS = 33;
+  public static final int REQUIRE = 47;
+  public static final int BREAK = 45;
+  public static final int PAR_IZQ = 9;
+  public static final int SWITCH = 43;
+  public static final int POTENCIA = 36;
+  public static final int COMENTARIO_MULINEA = 8;
+  public static final int ELSE = 39;
+  public static final int WHILE = 42;
+  public static final int DEFAULT = 46;
+  public static final int MAYOR_IGUAL = 28;
+  public static final int LET = 18;
+  public static final int PTCOMA = 14;
+  public static final int LLAV_DER = 12;
+  public static final int MENOR_IGUAL = 27;
+  public static final int DIVISION = 35;
+  public static final int VAR = 19;
+  public static final int DO = 41;
+  public static final int MAS = 32;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
@@ -62,6 +64,8 @@ public class sym {
   "DECIMAL",
   "CADENA",
   "CADENA_SIMP",
+  "COMENTARIO_LINEA",
+  "COMENTARIO_MULINEA",
   "PAR_IZQ",
   "PAR_DER",
   "LLAV_IZQ",
