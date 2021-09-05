@@ -94,8 +94,8 @@ nonterminal  INICIO, SENTENCIAS,
 start with INICIO;
 
 INICIO ::=  INICIO ENTER
-            |INICIO COMENTARIO_LINEA:c {: String a=c.toString();datos.comentarios(a);:}
-            |INICIO COMENTARIO_MULINEA:c {: String a=c.toString();datos.comentarios(a);:}
+            |INICIO COMENTARIO_LINEA:c {: String a=c.toString();datos.comentarios(nombre,a);:}
+            |INICIO COMENTARIO_MULINEA:c {: String a=c.toString();datos.comentarios(nombre,a);:}
             |INICIO CLAS 
                 {:
                     System.out.println(tmp);
@@ -107,8 +107,8 @@ INICIO ::=  INICIO ENTER
                     tmp="";
                 :}
             |ENTER
-            |COMENTARIO_LINEA:c {: String a=c.toString();datos.comentarios(a);:}
-            |COMENTARIO_MULINEA:c {: String a=c.toString();datos.comentarios(a);:}
+            |COMENTARIO_LINEA:c {: String a=c.toString();datos.comentarios(nombre,a);:}
+            |COMENTARIO_MULINEA:c {: String a=c.toString();datos.comentarios(nombre,a);:}
             
 ;
 
@@ -125,8 +125,8 @@ SENTENCIAS ::=
     |SENTENCIAS LLAM_MET
     |SENTENCIAS IMPORTS
     |SENTENCIAS SEN_CONSOLA
-    |SENTENCIAS COMENTARIO_LINEA:c {: String a=c.toString();datos.comentarios(a);:}
-    |SENTENCIAS COMENTARIO_MULINEA:c {: String a=c.toString();datos.comentarios(a);:}
+    |SENTENCIAS COMENTARIO_LINEA:c {: String a=c.toString();datos.comentarios(nombre,a);:}
+    |SENTENCIAS COMENTARIO_MULINEA:c {: String a=c.toString();datos.comentarios(nombre,a);:}
     |VARIABLE
     |MET_PARM
     |MET
@@ -139,8 +139,8 @@ SENTENCIAS ::=
     |IMPORTS
     |SEN_CONSOLA
     |ENTER
-    |COMENTARIO_LINEA:c {: String a=c.toString();datos.comentarios(a);:}
-    |COMENTARIO_MULINEA:c {: String a=c.toString();datos.comentarios(a);:}
+    |COMENTARIO_LINEA:c {: String a=c.toString();datos.comentarios(nombre,a);:}
+    |COMENTARIO_MULINEA:c {: String a=c.toString();datos.comentarios(nombre,a);:}
     
 
 ;
@@ -152,13 +152,14 @@ CLAS ::= CLASE:idc
     {:
         System.out.println("-> NOMBRE CLASE: "+id);
          nombre = id.toString();
-        datos.Nombre_clases(nombre);
+        //datos.Nombre_clases(nombre);
     :}
     LLAV_IZQ 
     SENTENCIAS
     LLAV_DER:idl
     {:final_clase=idlleft;
-     datos.cantidad_lineas(inicio_clase,final_clase);
+    datos.Nombre_clases(nombre,inicio_clase,final_clase);
+    datos.cantidad_lineas(inicio_clase,final_clase);
     :} 
     |error LLAV_IZQ 
     | error LLAV_DER
@@ -248,34 +249,34 @@ VARIABLE ::= TIPO_VAR:tipo ID:id IGUAL PAR:v
         {:
         System.out.println("Varibale: "+id+" tipo: "+tipo +" con valor: "+v);
             String aux= id.toString();
-            datos.variables_clase(aux);
+            datos.variables_clase(nombre,aux);
         :}
         |TIPO_VAR:tipo ID:id IGUAL PAR:v PTCOMA
         {:
         System.out.println("Varibale: "+id+" tipo: "+tipo +" con valor: "+v);
              String aux= id.toString();
-            datos.variables_clase(aux);
+            datos.variables_clase(nombre,aux);
         :}
 
         | TIPO_VAR ID:id PTCOMA
         {: System.out.println("Varibale: "+id);
             String aux= id.toString();
-            datos.variables_clase(aux);
+            datos.variables_clase(nombre,aux);
         :}
         | TIPO_VAR ID:id 
         {:System.out.println("Varibale: "+id);
             String aux= id.toString();
-            datos.variables_clase(aux);
+            datos.variables_clase(nombre,aux);
         :}
         | ID:id IGUAL PAR:v
         {:System.out.println("Varibale: "+id +"valor "+v);
             String aux= id.toString();
-            datos.variables_clase(aux);
+            datos.variables_clase(nombre,aux);
         :}
         | ID:id IGUAL PAR:v PTCOMA
         {:System.out.println("Varibale: "+id +"valor "+v);
             String aux= id.toString();
-            datos.variables_clase(aux);
+            datos.variables_clase(nombre,aux);
         :}
         |error PTCOMA
         |error ENTER
@@ -459,7 +460,7 @@ VAR_FOR2 ::= VAR1:a IGUAL OP_FOR:c
             {:
                 RESULT = a +"="+c ;
                 String aux= a.toString(); /// se envia como variable repetido
-                datos.variables_clase(aux);
+                datos.variables_clase(nombre,aux);
             :} 
         ;
 OP_FOR ::=  OP_FOR:a ARITMETICO:b ENTERO:c
@@ -496,7 +497,7 @@ OP_FOR ::=  OP_FOR:a ARITMETICO:b ENTERO:c
 VARIABLE_FOR ::= TIPO_VAR:tipo ID:id IGUAL OP_FOR:value
         {:RESULT =  tipo +""+id+"="+value;
                 String aux= id.toString(); /// se envia como variable repetido
-                datos.variables_clase(aux);
+                datos.variables_clase(nombre,aux);
 
         :}
         ; 

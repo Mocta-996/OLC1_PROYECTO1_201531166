@@ -5,6 +5,7 @@
  */
 package olc1_p1_201531166;
 
+import static Data.Data.nom_archivo;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.io.BufferedReader;
@@ -49,11 +50,12 @@ public class Interfaz extends javax.swing.JFrame {
     private void initComponents() {
 
         Pestañas = new javax.swing.JTabbedPane();
-        Consola = new javax.swing.JTextField();
         CerrarP = new javax.swing.JButton();
         CrearP = new javax.swing.JButton();
         Generar_reporte = new javax.swing.JButton();
         Ejecutar1 = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        Consola = new javax.swing.JTextArea();
         Archivo = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
@@ -64,13 +66,6 @@ public class Interfaz extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("FIUSAC Copy Analyzer");
         setBackground(new java.awt.Color(51, 51, 51));
-
-        Consola.setText("Ingrese un archivo !");
-        Consola.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ConsolaActionPerformed(evt);
-            }
-        });
 
         CerrarP.setText("Cerrar Pestaña");
         CerrarP.addActionListener(new java.awt.event.ActionListener() {
@@ -99,6 +94,10 @@ public class Interfaz extends javax.swing.JFrame {
                 Ejecutar1ActionPerformed(evt);
             }
         });
+
+        Consola.setColumns(20);
+        Consola.setRows(5);
+        jScrollPane1.setViewportView(Consola);
 
         jMenu1.setText("Archivo");
         jMenu1.add(jSeparator1);
@@ -140,7 +139,7 @@ public class Interfaz extends javax.swing.JFrame {
                 .addComponent(CrearP, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(28, 28, 28)
                 .addComponent(CerrarP, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 107, Short.MAX_VALUE)
                 .addComponent(Ejecutar1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(32, 32, 32)
                 .addComponent(Generar_reporte, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -148,17 +147,17 @@ public class Interfaz extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(112, 112, 112)
                 .addComponent(Pestañas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 536, Short.MAX_VALUE)
-                .addComponent(Consola, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(33, 33, 33))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(96, 96, 96))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(Pestañas, javax.swing.GroupLayout.PREFERRED_SIZE, 497, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Consola, javax.swing.GroupLayout.PREFERRED_SIZE, 479, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 482, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(CrearP, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -180,10 +179,6 @@ public class Interfaz extends javax.swing.JFrame {
         Abrir();
     }//GEN-LAST:event_AbrirActionPerformed
 
-    private void ConsolaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConsolaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_ConsolaActionPerformed
-
     private void CerrarPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CerrarPActionPerformed
         // TODO add your handling code here:
         cerrarpestaña();
@@ -198,6 +193,14 @@ public class Interfaz extends javax.swing.JFrame {
         try {
             // TODO add your handling code here:
             Generar_Reportes();
+            String xxx = Consola.getText();
+            Consola.setText(xxx+"\n Generarndo reporte. ");
+            xxx = Consola.getText();
+            Consola.setText(xxx+"\n Generando Reporte General... ");
+            xxx = Consola.getText();
+            Consola.setText(xxx+"\n Generando Reporte de Errores... ");
+            xxx = Consola.getText();
+            Consola.setText(xxx+"\n Generando Reporte Tokens... ");
         } catch (IOException ex) {
             Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -206,6 +209,15 @@ public class Interfaz extends javax.swing.JFrame {
     private void Ejecutar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Ejecutar1ActionPerformed
         // TODO add your handling code here:
         Ejecutar();
+        
+        String xxx = Consola.getText();
+        Consola.setText(xxx+"\n Iniciando analisis lexico del archivo: "+ nom_archivo);
+        xxx = Consola.getText();
+        Consola.setText(xxx+"\n Iniciando analisis Sintanctico del archivo: "+ nom_archivo);
+        xxx = Consola.getText();
+        Consola.setText(xxx+"\n el analisis del archivo : "+ nom_archivo +"\n finalizo con exito");
+        
+        
     }//GEN-LAST:event_Ejecutar1ActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
@@ -252,7 +264,7 @@ public class Interfaz extends javax.swing.JFrame {
     public javax.swing.JMenuItem Abrir;
     private javax.swing.JMenuBar Archivo;
     public javax.swing.JButton CerrarP;
-    public javax.swing.JTextField Consola;
+    public static javax.swing.JTextArea Consola;
     public javax.swing.JButton CrearP;
     public javax.swing.JButton Ejecutar1;
     public javax.swing.JButton Generar_reporte;
@@ -260,6 +272,7 @@ public class Interfaz extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     // End of variables declaration//GEN-END:variables
 
@@ -357,17 +370,17 @@ public class Interfaz extends javax.swing.JFrame {
            
         }
         else{
-        
+            Consola.setText(texto_consola);
+            Tabs t = (Tabs) Pestañas.getSelectedComponent();
+            texto_consola +="\nIniciando Analisis Lexico"
+                    + "\n Analizando Archivo: "+Pestañas.getTitleAt(Pestañas.getSelectedIndex());
+            Consola.setText(texto_consola);
+            String p = t.getPath();
+            Iniciar_Analisis.Iniciar(p);
         
         
         }
-        Consola.setText(texto_consola);
-        Tabs t = (Tabs) Pestañas.getSelectedComponent();
-        texto_consola +="\nIniciando Analisis Lexico"
-                + "\n Analizando Archivo: "+Pestañas.getTitleAt(Pestañas.getSelectedIndex());
-        Consola.setText(texto_consola);
-        String p = t.getPath();
-        Iniciar_Analisis.Iniciar(p);
+        
        
     }
     // =================================== FUNCIONES AUXILIARES =======================================

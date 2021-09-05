@@ -28,7 +28,7 @@ import java.util.List;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.json.simple.JSONObject;
-
+import olc1_p1_201531166.*;
 /*
 NOTAS: 
 ACTIVAR EN: CARGAR ARCHIVOS -> COMPARAR ARCHIVOS
@@ -60,25 +60,33 @@ public class Data {
     //VARIABLE QUE SE USA PARA GUARDAR LOS DATOS DE LA GRAFICA DE LINEA
     //public static  HashMap<String,String> grafica_linea  = new HashMap<>();
     public static  List<Lineas> grafica_linea  = new ArrayList<Lineas>();
-    // GUARDAR NOMBRE DE  LOS ARCHIVOS DE CADA PROYECTO:  nombre del archivo, path
+    //GUARDAR NOMBRE DE  LOS ARCHIVOS DE CADA PROYECTO:  nombre del archivo, path
     public static  HashMap<String,String> proyecto_A  = new HashMap<>();
     public static  HashMap<String,String> proyecto_B  = new HashMap<>();
     
     // IGRESO DE DATOS DE LOS ARCHIVOS QUE SE ANALIZAN
     //--- CLASE REPETIDA
-    public static  HashMap<String,String> nombre_clases  = new HashMap<>(); // guarda el nombre de la clase
-    public static  List<String> metodos_clase1 = new ArrayList<String>();   // guarda los metodos con  de  la primera clase
-    public static  List<String> metodos_clase2 = new ArrayList<String>();   // guarda los metodos con  de  la segunda clase
-    public static  HashMap<String,Integer> Lineas  = new HashMap<>(); //guarda los metodos con  de  la primera clase
+    public static List<Nombre_clases>  nom_clases = new ArrayList<Nombre_clases>(); // lista con objetos que guardara el nombre de las clases
+    public static List<Nombre_clases>  nom_clases2 = new ArrayList<Nombre_clases>(); // lista con objetos que guardara el nombre de las clases archivo2
+    //public static  HashMap<String,String> nombre_clases  = new HashMap<>(); // guarda el nombre de la clase
+    //public static  List<String> metodos_clase1 = new ArrayList<String>();   // guarda los metodos con  de  la primera clase
+    //public static  List<String> metodos_clase2 = new ArrayList<String>();   // guarda los metodos con  de  la segunda clase
+    //public static  HashMap<String,Integer> Lineas  = new HashMap<>(); //guarda los metodos con  de  la primera clase
     //--- variables repetidas 
-    public static  List<String> variables_clase1 = new ArrayList<String>();   // guarda los metodos con  de  la primera clase
-    public static  List<String> variables_clase2 = new ArrayList<String>();   // guarda los metodos con  de  la segunda clase
+    public static  List<Variables> variables = new ArrayList<Variables>();    // lista de objetos que contiene las variables ingresadas  
+    public static  List<Variables> variables2 = new ArrayList<Variables>();    // lista de objetos que contiene las variables ingresadas  archivo2
+    //public static  List<String> variables_clase1 = new ArrayList<String>();   // guarda los metodos con  de  la primera clase
+    //public static  List<String> variables_clase2 = new ArrayList<String>();   // guarda los metodos con  de  la segunda clase
     // ---- metodos de cada clase
+    //public static List<Metodos> metodos_clases = new ArrayList<Metodos>();      // lista con objetos que guarda todas las clases
+    //public static List<Metodos> metodos_clases2 = new ArrayList<Metodos>();      // lista con objetos que guarda todas las clases archivo 2
     public static  List<Metodos> metodos_class1 = new ArrayList<Metodos>();   // guarda los metodos con  de  la segunda clase
     public static  List<Metodos> metodos_class2 = new ArrayList<Metodos>();   // guarda los metodos con  de  la segunda clase
     // --- metodos comentarios repetidos
-    public static  List<String> comentario1 = new ArrayList<String>();   // guarda los comentario repetidos de la clase 1
-    public static  List<String> comentario2 = new ArrayList<String>();   // guarda los comentario repetidos de la clase 2
+    public static  List<Comentario> comentarios = new ArrayList<Comentario>(); // lista de objeto que guarda los comentarios de cada clase
+    public static  List<Comentario> comentarios2 = new ArrayList<Comentario>(); // lista de objeto que guarda los comentarios de cada clase
+    //public static  List<String> comentario1 = new ArrayList<String>();   // guarda los comentario repetidos de la clase 1
+    //public static  List<String> comentario2 = new ArrayList<String>();   // guarda los comentario repetidos de la clase 2
     
     //-- PUNTAJES DE REPITENCIA 
     //-- lista que guardara los puntajes de repitencia de las clases. 
@@ -160,16 +168,15 @@ public class Data {
                     pe_variable();
                     pe_imprimir();
                     puntaje_general();
-                    nombre_clases.clear();
-                    metodos_clase1.clear();
-                    metodos_clase2.clear();
-                    Lineas.clear();
-                    variables_clase1.clear();
-                    variables_clase2.clear();
+                    nom_clases.clear();
+                    nom_clases2.clear();
                     metodos_class1.clear();
                     metodos_class2.clear();
-                   comentario1.clear();
-                   comentario2.clear();
+                    //Lineas.clear();
+                    variables.clear();
+                    variables2.clear();
+                   comentarios.clear();
+                   comentarios2.clear();
                 }
                }
            }
@@ -204,13 +211,17 @@ public class Data {
         }
         
         try{
+        
         String archivo1 =text;
      
         System.out.println("Inicia el analisis...\n");
         AnalisisReporte.scanner scan = new AnalisisReporte.scanner(new BufferedReader( new StringReader(archivo1)));
+        
         AnalisisReporte.parser parser = new AnalisisReporte.parser(scan);
+        
         parser.parse();
         System.out.println("Finaliza el analisis...");
+        
         }catch(Exception e){
              System.out.println("Error carga de archiovs js   "+e);
         }
@@ -218,48 +229,78 @@ public class Data {
     
     // metodo para ingresar el nombre de las clases de los archivos
        
-    public void Nombre_clases(String nombre){
-      if(Bandera1){
-          nombre_clases.put("clase1", nombre);
-      }
-      else{
-        nombre_clases.put("clase2", nombre);
-      }
+    public void Nombre_clases(String nombre,int inicio,int fin){
+         int total = fin-inicio;
+        Nombre_clases n = new Nombre_clases();
+        n.setArchivo(nom_archivo);
+        n.setNombre(nombre);
+        n.setCant_lineas(total);
+        
+        if(Bandera1){
+            //nombre_clases.put("clase1", nombre);
+            nom_clases.add(n);
+        }   
+        else{
+          //nombre_clases.put("clase2", nombre);
+          nom_clases2.add(n);
+        }
     }
     // metodo para ingresar la cantidad de linea de cada clase
     public void cantidad_lineas(int inicio,int fin){
         int total = fin-inicio;
       if(Bandera1){
-        Lineas.put("clase1", total);
+        //Lineas.put("clase1", total);
       }
       else{
-        Lineas.put("clase2", total);
+        //Lineas.put("clase2", total);
       }
     }
     
     public void metodos_clase(String id){
       if(Bandera1){
-        metodos_clase1.add (id);
+        //metodos_clase1.add (id);
       }
       else{
-        metodos_clase2.add(id);
+        //metodos_clase2.add(id);
       }
     }
      
     // metodo para ingresar las variables de cada archivo que se lee
-    public void variables_clase(String id){
+    public void variables_clase(String clas, String id){
+        Variables v = new Variables();
+        v.setArchivo(nom_archivo);
+        v.setClase(clas);
+        v.setId(id);
+        
            
         
     if(Bandera1){
-        if(variables_clase1.contains(id)){
+        boolean ingresado = false;
+        for(int i=0;i<variables.size();i++){
             
-        }else{variables_clase1.add(id);}
-        
+            if(variables.get(i).getClase().equals(clas)){
+                if(variables.get(i).getId().equals(id)){
+                    ingresado = true;
+                    break;
+                }
+            }
+        }
+        if(ingresado == false){ variables.add(v); } 
       }
       else{
-        if(!variables_clase2.contains(id)){
-            variables_clase2.add(id);
+        boolean ingresado = false;
+        for(int i=0;i<variables2.size();i++){
+            if(variables2.get(i).getClase().equals(clas)){
+                if(variables2.get(i).getId().equals(id)){
+                    ingresado = true;
+                    break;
+                }
+            }
         }
+        if(ingresado == false){
+            variables2.add(v);
+        } 
+        
       }
       }
     
@@ -278,22 +319,32 @@ public class Data {
         m.setId(id);
         m.setParametros(cantidad_parametros);
         m.setLineas(lineas);
-        
+        m.setArchivo(nom_archivo);
+       
         if(Bandera1){
+            //metodos_clases.add(m);
             metodos_class1.add(m);
         }
         else{
-          metodos_class2.add(m);
+            //metodos_clases2.add(m);
+            metodos_class2.add(m);
         }
     }
     
-    public void comentarios(String comentario){
+    public void comentarios(String clas,String comentario){
             String c = comentario.replaceAll("\\s","");
+            Comentario com = new Comentario();
+            com.setArchivo(nom_archivo);
+            com.setClase(clas);
+            com.setComentario(c);
+            
             if(Bandera1){
-                comentario1.add(c);
+                comentarios.add(com);
+                //comentario1.add(c);
             }
             else{
-              comentario2.add(c);
+                comentarios2.add(com);
+                //comentario2.add(c);
             }
     }
     
@@ -306,20 +357,67 @@ public class Data {
        
         double punteo =0;
         boolean r=false;
-        String clase1 = nombre_clases.get("clase1");
-        String clase2 = nombre_clases.get("clase2");
-        // repitencia de identificador:
+        String cla1 ="";
+        String cla2="";
+        String arch ="";
         
-        if(clase1.equals( clase2)){
-            punteo +=0.2; 
-            r= true;
+        
+        for(int i =0;i<nom_clases.size();i++){
+            punteo =0;
+            // obteniendo el nombre de la clase y el archivo 
+            cla1 = nom_clases.get(i).getNombre();
+            arch = nom_clases.get(i).getArchivo();
+            for(int j =0;j<nom_clases2.size();j++){
+            // obteniendo el nombre de la clase2 y el archivo 
+                cla2 = nom_clases2.get(j).getNombre();
+                //verificando si es el mimso id de clase
+                if(cla1.equals( cla2)){
+                    punteo +=0.2; 
+                    r= true;
+                }
+                // verifiando cantidad de lineas
+                if(nom_clases.get(i).getCant_lineas() == nom_clases2.get(j).getCant_lineas()){
+                    punteo +=0.4; 
+                    r= true;
+                }
+                // verificando metodos entre las dos clases
+                if(id_metodos_clases(cla1,cla2)){
+                    punteo +=0.4; 
+                    r= true;
+                }
+                Pe_Clase c= new Pe_Clase();
+                c.setArchivo(arch);
+                c.setClase1(cla1);
+                c.setClase2(cla2);
+                c.setPunteo(punteo);
+                c.setR(r);
+                pespecifico_clase.add(c);
+             }        
         }
-        // repitencia de metodos
-        boolean salir =false;
-       for(int i=0;i<metodos_clase1.size();i++){
+           
+    }
+    
+    public static boolean id_metodos_clases(String clase1,String clase2){
+        boolean salir= false;
+        List<String> met1 =new ArrayList<String>();
+        List<String> met2 =new ArrayList<String>();
+        
+        for (int i =0; i<metodos_class1.size();i++){
+            if(metodos_class1.get(i).getClase().equals(clase1)){
+                met1.add(metodos_class1.get(i).getId());
+            }
+        }
+        
+        for (int j =0; j<metodos_class2.size();j++){
+            if(metodos_class2.get(j).getClase().equals(clase1)){
+                met2.add(metodos_class2.get(j).getId());
+            }
+        }
+        // verificando los metodos 
+        for(int i=0;i<met1.size();i++){
            salir =false;
-           for(int j=0;j<metodos_clase2.size();j++){
-            if(metodos_clase1.get(i)==metodos_clase2.get(j)){
+           for(int j=0;j<met2.size();j++){
+            if(met1.get(i).equals(met2.get(j))){
                 //punteo +=0.4;
                 //r=true;
                 salir =true;
@@ -331,45 +429,32 @@ public class Data {
            }
         }
        if(salir){
-           punteo +=0.4;
+           return true;
        }
-       // repitencia de lineas
-       int i=Lineas.get("clase1");
-       int f=Lineas.get("clase2");
-       if(i == f){
-           punteo +=0.4;
-           r= true;
-       }
-        Pe_Clase c= new Pe_Clase();
-        c.setArchivo(nom_archivo);
-        c.setClase1(clase1);
-        c.setClase2(clase2);
-        c.setPunteo(punteo);
-        c.setR(r);
-        pespecifico_clase.add(c);
+        return false;
     }
 
-
+    // =========================== METODO PARA CALCULAR EL PUNTAJE DE LAS VARIABLES REPETIDAS ===================
     public static void pe_variable(){
         
-        for(int i=0; i<variables_clase1.size();i++){
-            for(int j=0; j<variables_clase2.size();j++){
-                String var1=variables_clase1.get(i);
-                String var2=variables_clase2.get(j);
+        for(int i=0; i<variables.size();i++){
+            for(int j=0; j<variables2.size();j++){
+                String var1=variables.get(i).getId();
+                String var2=variables2.get(j).getId();
                 if(var1.equals(var2)){
                     Pe_variable var = new Pe_variable();
-                    var.setArchivo(nom_archivo);
-                    var.setClase1(nombre_clases.get("clase1"));
-                    var.setClase2(nombre_clases.get("clase2"));
+                    var.setArchivo(variables.get(i).getArchivo());
+                    var.setClase1(variables.get(i).getClase());
+                    var.setClase2(variables2.get(j).getClase());
                     var.setPunteo(1);
                     var.setR(true);
-                    var.setVariable(variables_clase1.get(i));
+                    var.setVariable(var1);
                     pespecifico_variable.add(var);
                 }
             }
         }
     }
-    
+    // =========================== METODO PARA CALCULAR EL PUNTAJE DE LOS METODOS ==========================
     public static void pe_metodo(){
        List<String> aux= new ArrayList<String>();
         
@@ -469,19 +554,19 @@ public class Data {
     }
     
     public static void pe_comentario(){
-        for(int i=0;i<comentario1.size();i++){
-            for(int j=0;j<comentario2.size();j++){
-                String com1 = comentario1.get(i);
-                String com2 = comentario2.get(j);
+        for(int i=0;i<comentarios.size();i++){
+            for(int j=0;j<comentarios2.size();j++){
+                String com1 = comentarios.get(i).getComentario();
+                String com2 = comentarios2.get(j).getComentario();
                 if(com1.equals(com2))
                 {
                         Pe_comentario m = new Pe_comentario();
                         m.setArchivo(nom_archivo);
-                        m.setClase1(nombre_clases.get("clase1"));
-                        m.setClase2(nombre_clases.get("clase2"));
+                        m.setClase1(comentarios.get(i).getClase());
+                        m.setClase2(comentarios2.get(j).getClase());
                         m.setPunteo(1);
                         m.setR(true);
-                        m.setVariable(comentario1.get(i));
+                        m.setVariable(com1);
                         pespecifico_comentario.add(m);
                 }
             
@@ -532,16 +617,37 @@ public class Data {
     }
     
     public static void puntaje_general(){
-       
+        
+        Resumen r= new Resumen();
+        r.setProyecto("proyectoA");
+        r.setArchivo(nom_archivo);
+        r.setT_clases(nom_clases.size());
+        r.setT_comentarios(comentarios.size());
+        r.setT_metodos(metodos_class1.size());
+        r.setT_variables(variables.size());
+        resumen.add(r);
+        
+        Resumen rr= new Resumen();
+        rr.setProyecto("proyectoB");
+        rr.setArchivo(nom_archivo);
+        rr.setT_clases(nom_clases2.size());
+        rr.setT_comentarios(comentarios2.size());
+        rr.setT_metodos(metodos_class2.size());
+        rr.setT_variables(variables2.size());
+        resumen.add(rr);
+    }
+    // retorna el puntaje general. 
+    public static double  total_pgeneral(){
         int cla_repetidos =0;
         int com_repetidos =0;
         int met_repetidos =0;
         int var_repetidos =0;
+        /*
+        int sum_comentarios =comentarios.size()+comentarios2.size();
+        int sum_variables =variables.size()+variables2.size();
+        int sum_metodos =metodos_class1.size()+metodos_class2.size();
+        int sum_clase =nom_clases.size()+nom_clases2.size();*/
         
-        int sum_comentarios =comentario1.size()+comentario2.size();
-        int sum_variables =variables_clase1.size()+variables_clase2.size();
-        int sum_metodos =metodos_clase1.size()+metodos_clase1.size();
-        int sum_clase =2;
         // se analizaran  primero los datos repetidos
         for(int i=0; i<pespecifico_clase.size();i++){
             if(pespecifico_clase.get(i).getPunteo()>=0.6){
@@ -563,58 +669,20 @@ public class Data {
                     com_repetidos +=1;   
             }
         }
-        puntaje_general puntaje = new puntaje_general();
-        puntaje.setCla_rep(cla_repetidos);
-        puntaje.setCom_rep(com_repetidos);
-        puntaje.setMet_rep(met_repetidos);
-        puntaje.setVar_rep(var_repetidos);
-        
-        puntaje.setSum_cla(sum_clase);
-        puntaje.setSum_com(sum_comentarios);
-        puntaje.setSum_met(sum_metodos);
-        puntaje.setSum_var(sum_variables);
-        puntaje_g.add(puntaje);
-        
-        Resumen r= new Resumen();
-        r.setProyecto("proyectoA");
-        r.setArchivo(nom_archivo);
-        r.setT_clases(1);
-        r.setT_comentarios(comentario1.size());
-        r.setT_metodos(metodos_clase1.size());
-        r.setT_variables(variables_clase1.size());
-        resumen.add(r);
-        
-        Resumen rr= new Resumen();
-        rr.setProyecto("proyectoB");
-        rr.setArchivo(nom_archivo);
-        rr.setT_clases(1);
-        rr.setT_comentarios(comentario2.size());
-        rr.setT_metodos(metodos_clase2.size());
-        rr.setT_variables(variables_clase2.size());
-        resumen.add(rr);
-    }
-    // retorna el puntaje general. 
-    public static double  total_pgeneral(){
+                
         double total=0;
-        int cla_repetidos =0;
-        int com_repetidos =0;
-        int met_repetidos =0;
-        int var_repetidos =0;
+       
         
         int sum_comentarios =0;
         int sum_variables =0;
         int sum_metodos =0;
         int sum_clase =0;
-        for (int i =0; i<puntaje_g.size();i++){
-            cla_repetidos+= puntaje_g.get(i).getCla_rep();
-            com_repetidos+= puntaje_g.get(i).getCom_rep();
-            met_repetidos+= puntaje_g.get(i).getMet_rep();
-            var_repetidos+= puntaje_g.get(i).getVar_rep();
-            
-            sum_comentarios+= puntaje_g.get(i).getSum_com();
-            sum_variables+= puntaje_g.get(i).getSum_var();
-            sum_metodos+= puntaje_g.get(i).getSum_met();
-            sum_clase+= puntaje_g.get(i).getSum_cla();
+        for (int i =0; i<resumen.size();i++){
+                       
+            sum_comentarios+= resumen.get(i).getT_comentarios();
+            sum_variables+= resumen.get(i).getT_variables();
+            sum_metodos+= resumen.get(i).getT_metodos();
+            sum_clase+= resumen.get(i).getT_clases();
         }
         double c = (((double)com_repetidos/sum_comentarios)*0.2);
         double v = (((double)var_repetidos/sum_variables)*0.2);
@@ -663,11 +731,11 @@ public class Data {
                     data.addValue(vA, "POYECTO A","Variables");
                     data.addValue(mA, "POYECTO A","Metodos");
                     data.addValue(cA, "POYECTO A","Clases");
-                    data.addValue(coA, "POYECTO A","Cometnarios");
+                    data.addValue(coA, "POYECTO A","Comentarios");
                     data.addValue(vB, "POYECTO B","Variables");
                     data.addValue(mB, "POYECTO B","Metodos");
                     data.addValue(cB, "POYECTO B","Clases");
-                    data.addValue(coB,"POYECTO B","Cometnarios");        
+                    data.addValue(coB,"POYECTO B","Comentarios");        
        final JFreeChart chart=ChartFactory.createLineChart("Resumen General",
                 "","",data,PlotOrientation.VERTICAL,
                 true,true,false); 
@@ -914,6 +982,8 @@ public class Data {
     // ================================================================================================================
     public  static void Generar_reporte() throws IOException{
         //puntaje_general();
+        
+        
         Generar_gbarras();
         Generar_glinea();
         Generar_gpie();
@@ -921,6 +991,8 @@ public class Data {
         generar_reporte_errores();
         generar_reporte_token();
         generar_Json();
+       
+        
     }
     
     public static void Generar_gbarras() {

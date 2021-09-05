@@ -13,6 +13,7 @@ package Data;
 public class Metodos {
     private String clase;
     private String id;
+    private String archivo;
     private int parametros;
     private int lineas;
     public void Metodo(){
@@ -20,6 +21,15 @@ public class Metodos {
         id ="";
         parametros =0;
         lineas =0;
+        archivo ="";
+    }
+
+    public String getArchivo() {
+        return archivo;
+    }
+
+    public void setArchivo(String archivo) {
+        this.archivo = archivo;
     }
 
     public String getClase() {
